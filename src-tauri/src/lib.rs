@@ -58,7 +58,8 @@ fn create_preset_from_template(
 ) -> Result<Preset, String> {
     with_db(&state, |db| {
         let template = db
-            .get_template(&template_id)?
+            .get_template(&template_id)
+            .map_err(|e| e.to_string())?
             .ok_or_else(|| format!("Template not found: {template_id}"))?;
 
         let mut parameters = HashMap::new();
@@ -77,7 +78,7 @@ fn create_preset_from_template(
             created_at: now.clone(),
             updated_at: now,
         };
-        db.upsert_preset(&preset)?;
+        db.upsert_preset(&preset).map_err(|e| e.to_string())?;
         Ok(preset)
     })
 }
@@ -87,7 +88,7 @@ fn save_preset(state: State<AppState>, preset: Preset) -> Result<Preset, String>
     with_db(&state, |db| {
         let mut updated = preset;
         updated.updated_at = Utc::now().to_rfc3339();
-        db.upsert_preset(&updated)?;
+        db.upsert_preset(&updated).map_err(|e| e.to_string())?;
         Ok(updated)
     })
 }
@@ -118,7 +119,7 @@ fn scan_projects(state: State<AppState>, roots: Option<Vec<String>>) -> Result<V
     let discovered = scanner::scan_directories(&scan_roots, 4);
 
     with_db(&state, |db| {
-        let existing = db.list_projects()?;
+        let existing = db.list_projects().map_err(|e| e.to_string())?;
         let existing_paths: HashMap<String, ProjectProfile> =
             existing.into_iter().map(|p| (p.path.clone(), p)).collect();
 
@@ -129,7 +130,7 @@ fn scan_projects(state: State<AppState>, roots: Option<Vec<String>>) -> Result<V
                 project.preset_ids = existing.preset_ids.clone();
                 project.last_deployed_at = existing.last_deployed_at.clone();
             }
-            db.upsert_project(&project)?;
+            db.upsert_project(&project).map_err(|e| e.to_string())?;
             merged.push(project);
         }
         Ok(merged)
@@ -144,7 +145,7 @@ fn list_projects(state: State<AppState>) -> Result<Vec<ProjectProfile>, String> 
 #[tauri::command]
 fn save_project(state: State<AppState>, project: ProjectProfile) -> Result<ProjectProfile, String> {
     with_db(&state, |db| {
-        db.upsert_project(&project)?;
+        db.upsert_project(&project).map_err(|e| e.to_string())?;
         Ok(project)
     })
 }
@@ -172,7 +173,7 @@ fn deploy_preset(
     project_path: String,
 ) -> Result<DeployResult, String> {
     with_db(&state, |db| {
-        let result = deploy::deploy_preset(db, &preset_id, &project_path)?;
+        let result = deploy::deploy_preset(db, &preset_id, &project_path).map_err(|e| e.to_string())?;
         if let Ok(mut projects) = db.list_projects() {
             if let Some(project) = projects.iter_mut().find(|p| p.path == project_path) {
                 project.last_deployed_at = Some(Utc::now().to_rfc3339());

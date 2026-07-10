@@ -4,7 +4,7 @@ use crate::types::{BookManifest, DeployDiff, DeployResult, ManifestArtifact, Syn
 use chrono::Utc;
 use sha2::{Digest, Sha256};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
