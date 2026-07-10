@@ -1,0 +1,29 @@
+{
+  "id": "vue-typescript",
+  "name": "Vue 3 + TypeScript",
+  "description": "Vue 3 Composition API with TypeScript",
+  "category": "Frontend",
+  "artifactType": "rule",
+  "tags": ["vue", "typescript", "frontend"],
+  "parameters": [
+    {
+      "key": "compositionApi",
+      "label": "Composition API only",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "usePinia",
+      "label": "Use Pinia for state",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Vue 3 and TypeScript component conventions",
+    "globs": "**/*.{vue,ts}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Vue 3 + TypeScript\n\n{{#if parameters.compositionApi}}\n- Use Composition API with `<script setup lang=\"ts\">`\n- Extract reusable logic into composables in `composables/`\n{{/if}}\n- Define props with `defineProps<T>()` and emits with `defineEmits<T>()`\n{{#if parameters.usePinia}}\n- Use Pinia stores for shared state\n{{/if}}\n- Keep components focused; split large SFCs into smaller ones\n",
+  "source": "awesome-cursorrules"
+}

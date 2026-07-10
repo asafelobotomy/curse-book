@@ -1,0 +1,36 @@
+{
+  "id": "python-fastapi",
+  "name": "Python FastAPI",
+  "description": "FastAPI backend conventions and patterns",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["python", "fastapi", "backend"],
+  "parameters": [
+    {
+      "key": "typeHints",
+      "label": "Require type hints",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "validation",
+      "label": "Input validation",
+      "fieldType": "select",
+      "default": "pydantic",
+      "options": ["pydantic", "manual", "both"]
+    },
+    {
+      "key": "asyncPreferred",
+      "label": "Prefer async endpoints",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "FastAPI service conventions and API patterns",
+    "globs": "**/*.py",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Python FastAPI Standards\n\n{{#if parameters.typeHints}}\n- Add type hints to all function signatures and return types\n{{/if}}\n{{#if parameters.asyncPreferred}}\n- Use `async def` for I/O-bound endpoints\n{{/if}}\n- Define Pydantic models for request/response schemas\n- Keep route handlers thin; delegate business logic to service layer\n- Return structured error responses with `HTTPException` and consistent error codes\n- Use dependency injection for database sessions and auth\n- Place routers in `routers/`, services in `services/`, models in `models/`\n",
+  "source": "awesome-cursorrules"
+}

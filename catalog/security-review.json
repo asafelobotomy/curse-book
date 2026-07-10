@@ -1,0 +1,29 @@
+{
+  "id": "security-review",
+  "name": "Security Review",
+  "description": "Security-focused code review skill",
+  "category": "Security",
+  "artifactType": "skill",
+  "tags": ["security", "review"],
+  "parameters": [
+    {
+      "key": "checkOwasp",
+      "label": "OWASP Top 10 checks",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "checkSecrets",
+      "label": "Secret scanning",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "skillFrontmatter": {
+    "name": "security-review",
+    "description": "Review code changes for security vulnerabilities. Use when the user asks for a security review or before merging sensitive changes.",
+    "disableModelInvocation": true
+  },
+  "bodyTemplate": "# Security Review\n\n## Checklist\n\n{{#if parameters.checkOwasp}}\n- [ ] No SQL injection (parameterized queries only)\n- [ ] No XSS (sanitize output, use CSP)\n- [ ] Authentication and authorization properly enforced\n- [ ] Input validation on all external data\n{{/if}}\n{{#if parameters.checkSecrets}}\n- [ ] No hardcoded secrets, API keys, or credentials\n- [ ] Environment variables used for sensitive config\n{{/if}}\n- [ ] Dependencies checked for known vulnerabilities\n\n## Severity levels\n\n- **Critical**: Exploitable vulnerability, block merge\n- **High**: Likely vulnerability, fix before merge\n- **Medium**: Defense-in-depth improvement\n",
+  "source": "awesome-cursorrules"
+}

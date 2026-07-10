@@ -1,0 +1,20 @@
+{
+  "id": "acr-code-guidelines",
+  "name": "Code Guidelines",
+  "description": "Cursor rules for code development with guidelines integration.",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Cursor rules for code development with guidelines integration.",
+    "globs": "**/*",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "1. **Verify Information**: Always verify information before presenting it. Do not make assumptions or speculate without clear evidence.\n\n2. **File-by-File Changes**: Make changes file by file and give me a chance to spot mistakes.\n\n3. **No Apologies**: Never use apologies.\n\n4. **No Understanding Feedback**: Avoid giving feedback about understanding in comments or documentation.\n\n5. **No Whitespace Suggestions**: Don't suggest whitespace changes.\n\n6. **No Summaries**: Don't summarize changes made.\n\n7. **No Inventions**: Don't invent changes other than what's explicitly requested.\n\n8. **No Unnecessary Confirmations**: Don't ask for confirmation of information already provided in the context.\n\n9. **Preserve Existing Code**: Don't remove unrelated code or functionalities. Pay attention to preserving existing structures.\n\n10. **Single Chunk Edits**: Provide all edits in a single chunk instead of multiple-step instructions or explanations for the same file.\n\n11. **No Implementation Checks**: Don't ask the user to verify implementations that are visible in the provided context.\n\n12. **No Unnecessary Updates**: Don't suggest updates or changes to files when there are no actual modifications needed.\n\n13. **Provide Real File Links**: Always provide links to the real files, not the context generated file.\n\n14. **No Current Implementation**: Don't show or discuss the current implementation unless specifically requested.\n\n15. **Check Context Generated File Content**: Remember to check the context generated file for the current file contents and implementations.\n\n16. **Use Explicit Variable Names**: Prefer descriptive, explicit variable names over short, ambiguous ones to enhance code readability.\n\n17. **Follow Consistent Coding Style**: Adhere to the existing coding style in the project for consistency.\n\n18. **Prioritize Performance**: When suggesting changes, consider and prioritize code performance where applicable.\n\n19. **Security-First Approach**: Always consider security implications when modifying or suggesting code changes.\n\n20. **Test Coverage**: Suggest or include appropriate unit tests for new or modified code.\n\n21. **Error Handling**: Implement robust error handling and logging where necessary.\n\n22. **Modular Design**: Encourage modular design principles to improve code maintainability and reusability.\n\n23. **Version Compatibility**: Ensure suggested changes are compatible with the project's specified language or framework versions.\n\n24. **Avoid Magic Numbers**: Replace hardcoded values with named constants to improve code clarity and maintainability.\n\n25. **Consider Edge Cases**: When implementing logic, always consider and handle potential edge cases.\n\n26. **Use Assertions**: Include assertions wherever possible to validate assumptions and catch potential errors early.",
+  "source": "awesome-cursorrules"
+}

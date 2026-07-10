@@ -1,0 +1,29 @@
+{
+  "id": "django-rest",
+  "name": "Django REST Framework",
+  "description": "DRF API conventions",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["python", "django", "api"],
+  "parameters": [
+    {
+      "key": "useSerializers",
+      "label": "Strict serializer validation",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "useViewSets",
+      "label": "Prefer ViewSets",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Django REST Framework API conventions",
+    "globs": "**/*.py",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Django REST Framework\n\n{{#if parameters.useSerializers}}\n- Validate all input through DRF serializers\n- Never trust raw request.data without validation\n{{/if}}\n{{#if parameters.useViewSets}}\n- Use ViewSets with routers for CRUD endpoints\n{{/if}}\n- Keep views thin; business logic in services or models\n- Use pagination for list endpoints\n- Return consistent error response format\n",
+  "source": "awesome-cursorrules"
+}

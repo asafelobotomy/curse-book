@@ -1,0 +1,20 @@
+{
+  "id": "acr-clean-code",
+  "name": "Clean Code",
+  "description": "Guidelines for writing clean, maintainable, and human-readable code. Apply these rules when writing or reviewing code to ensure consistency and quality.",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Guidelines for writing clean, maintainable, and human-readable code. Apply these rules when writing or reviewing code to ensure consistency and quality.",
+    "globs": "[\"**/*\"]",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# Clean Code Guidelines\n\n## Constants Over Magic Numbers\n- Replace hard-coded values with named constants\n- Use descriptive constant names that explain the value's purpose\n- Keep constants at the top of the file or in a dedicated constants file\n\n## Meaningful Names\n- Variables, functions, and classes should reveal their purpose\n- Names should explain why something exists and how it's used\n- Avoid abbreviations unless they're universally understood\n\n## Smart Comments\n- Don't comment on what the code does - make the code self-documenting\n- Use comments to explain why something is done a certain way\n- Document APIs, complex algorithms, and non-obvious side effects\n\n## Single Responsibility\n- Each function should do exactly one thing\n- Functions should be small and focused\n- If a function needs a comment to explain what it does, it should be split\n\n## DRY (Don't Repeat Yourself)\n- Extract repeated code into reusable functions\n- Share common logic through proper abstraction\n- Maintain single sources of truth\n\n## Clean Structure\n- Keep related code together\n- Organize code in a logical hierarchy\n- Use consistent file and folder naming conventions\n\n## Encapsulation\n- Hide implementation details\n- Expose clear interfaces\n- Move nested conditionals into well-named functions\n\n## Code Quality Maintenance\n- Refactor continuously\n- Fix technical debt early\n- Leave code cleaner than you found it\n\n## Testing\n- Write tests before fixing bugs\n- Keep tests readable and maintainable\n- Test edge cases and error conditions\n\n## Version Control\n- Write clear commit messages\n- Make small, focused commits\n- Use meaningful branch names",
+  "source": "awesome-cursorrules"
+}

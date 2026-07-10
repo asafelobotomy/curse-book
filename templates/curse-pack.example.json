@@ -1,0 +1,8 @@
+{
+  "id": "curse-book-starter",
+  "name": "Curse Book Starter",
+  "version": "1.0.0",
+  "description": "Example preset pack format for Curse Book",
+  "author": "Curse Book",
+  "templates": ["typescript-standards", "code-review"]
+}

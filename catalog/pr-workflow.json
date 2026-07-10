@@ -1,0 +1,29 @@
+{
+  "id": "pr-workflow",
+  "name": "PR Workflow",
+  "description": "Pull request creation and review workflow",
+  "category": "Workflow",
+  "artifactType": "skill",
+  "tags": ["git", "pr", "workflow"],
+  "parameters": [
+    {
+      "key": "runTestsFirst",
+      "label": "Run tests before PR",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "smallPrs",
+      "label": "Prefer small PRs",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "skillFrontmatter": {
+    "name": "pr-workflow",
+    "description": "Create pull requests following team workflow. Use when the user asks to open a PR, ship changes, or create a pull request.",
+    "disableModelInvocation": true
+  },
+  "bodyTemplate": "# PR Workflow\n\n1. Review all changes with `git diff`\n{{#if parameters.runTestsFirst}}\n2. Run tests and lint before creating PR\n{{/if}}\n3. Create a descriptive branch name\n4. Write PR title and body with summary and test plan\n5. Push branch and create PR with `gh pr create`\n{{#if parameters.smallPrs}}\n- Keep PRs focused; split large changes into reviewable chunks\n{{/if}}\n",
+  "source": "awesome-cursorrules"
+}

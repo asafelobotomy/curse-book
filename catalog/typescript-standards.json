@@ -1,0 +1,44 @@
+{
+  "id": "typescript-standards",
+  "name": "TypeScript Standards",
+  "description": "Core TypeScript coding standards with configurable strictness",
+  "category": "Languages",
+  "artifactType": "rule",
+  "tags": ["typescript", "standards"],
+  "parameters": [
+    {
+      "key": "strictNullChecks",
+      "label": "Strict null checks",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "preferInterfaces",
+      "label": "Prefer interfaces over types",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "maxFunctionLines",
+      "label": "Max function lines",
+      "fieldType": "slider",
+      "default": 40,
+      "min": 20,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "key": "strictErrors",
+      "label": "Strict error handling",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "TypeScript coding standards and conventions",
+    "globs": "**/*.{ts,tsx}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# TypeScript Standards\n\n{{#if parameters.strictNullChecks}}\n- Enable strict null checks; never use `any` to bypass nullability\n- Use optional chaining and nullish coalescing over manual null checks\n{{/if}}\n{{#if parameters.preferInterfaces}}\n- Prefer `interface` over `type` for object shapes\n{{/if}}\n- Keep functions under {{parameters.maxFunctionLines}} lines; extract helpers when larger\n{{#if parameters.strictErrors}}\n- Never swallow errors in empty catch blocks\n- Wrap errors with context using `cause` when re-throwing\n- Define typed error classes for domain failures\n{{/if}}\n- Use exhaustive switch with `never` check in default case for discriminated unions\n",
+  "source": "awesome-cursorrules"
+}

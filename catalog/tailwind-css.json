@@ -1,0 +1,29 @@
+{
+  "id": "tailwind-css",
+  "name": "Tailwind CSS",
+  "description": "Tailwind CSS styling conventions",
+  "category": "Frontend",
+  "artifactType": "rule",
+  "tags": ["tailwind", "css", "frontend"],
+  "parameters": [
+    {
+      "key": "mobileFirst",
+      "label": "Mobile-first responsive",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "useCva",
+      "label": "Use CVA for variants",
+      "fieldType": "toggle",
+      "default": false
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Tailwind CSS styling conventions",
+    "globs": "**/*.{tsx,jsx,vue}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Tailwind CSS\n\n- Use utility classes directly in JSX/template\n- Avoid `@apply` except in rare design-token cases\n{{#if parameters.mobileFirst}}\n- Design mobile-first; use `sm:`, `md:`, `lg:` breakpoints progressively\n{{/if}}\n{{#if parameters.useCva}}\n- Use `class-variance-authority` for component variants\n{{/if}}\n- Extract repeated class strings into component props, not CSS files\n- Use Tailwind's design tokens (spacing, colors) consistently\n",
+  "source": "awesome-cursorrules"
+}

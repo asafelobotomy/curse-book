@@ -1,0 +1,38 @@
+{
+  "id": "react-typescript",
+  "name": "React + TypeScript",
+  "description": "React component patterns with TypeScript",
+  "category": "Frontend",
+  "artifactType": "rule",
+  "tags": ["react", "typescript", "frontend"],
+  "parameters": [
+    {
+      "key": "preferNamedExports",
+      "label": "Named exports only",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "componentMaxLines",
+      "label": "Max component lines",
+      "fieldType": "slider",
+      "default": 200,
+      "min": 50,
+      "max": 400,
+      "step": 25
+    },
+    {
+      "key": "useTailwind",
+      "label": "Use Tailwind CSS",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "React and TypeScript component conventions",
+    "globs": "**/*.{tsx,jsx}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# React + TypeScript Patterns\n\n- Use functional components with hooks\n{{#if parameters.preferNamedExports}}\n- Use named exports, not default exports\n{{/if}}\n- Keep components under {{parameters.componentMaxLines}} lines; extract subcomponents when larger\n- Co-locate component-specific types with the component file\n{{#if parameters.useTailwind}}\n- Use Tailwind utility classes; avoid inline style objects\n{{/if}}\n- Extract custom hooks for reusable logic\n- Prefer composition over prop drilling\n",
+  "source": "awesome-cursorrules"
+}

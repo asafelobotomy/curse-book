@@ -1,0 +1,29 @@
+{
+  "id": "rust-standards",
+  "name": "Rust Standards",
+  "description": "Rust coding conventions and error handling",
+  "category": "Languages",
+  "artifactType": "rule",
+  "tags": ["rust", "systems"],
+  "parameters": [
+    {
+      "key": "useThiserror",
+      "label": "Use thiserror for errors",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "clippyStrict",
+      "label": "Enforce clippy warnings",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Rust coding standards and idiomatic patterns",
+    "globs": "**/*.rs",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Rust Standards\n\n- Prefer `Result<T, E>` over panics for recoverable errors\n{{#if parameters.useThiserror}}\n- Use `thiserror` for library error types with `#[derive(Error)]`\n{{/if}}\n- Use `?` operator for error propagation\n- Avoid `unwrap()` in production code paths\n{{#if parameters.clippyStrict}}\n- Run `cargo clippy` and fix all warnings before committing\n{{/if}}\n- Document public APIs with `///` doc comments\n",
+  "source": "awesome-cursorrules"
+}

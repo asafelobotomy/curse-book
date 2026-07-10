@@ -1,0 +1,29 @@
+{
+  "id": "go-standards",
+  "name": "Go Standards",
+  "description": "Go idiomatic patterns and conventions",
+  "category": "Languages",
+  "artifactType": "rule",
+  "tags": ["go", "golang"],
+  "parameters": [
+    {
+      "key": "useContext",
+      "label": "Context for cancellation",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "tableDrivenTests",
+      "label": "Table-driven tests",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Go coding standards and idiomatic patterns",
+    "globs": "**/*.go",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Go Standards\n\n- Follow standard Go project layout\n- Handle all errors explicitly; never ignore returned errors\n{{#if parameters.useContext}}\n- Pass `context.Context` as first parameter to I/O functions\n{{/if}}\n- Use `gofmt` and `golangci-lint` before committing\n{{#if parameters.tableDrivenTests}}\n- Write table-driven tests with `t.Run` subtests\n{{/if}}\n- Prefer composition over inheritance\n",
+  "source": "awesome-cursorrules"
+}

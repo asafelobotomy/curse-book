@@ -1,0 +1,29 @@
+{
+  "id": "monorepo",
+  "name": "Monorepo Conventions",
+  "description": "Monorepo structure and workspace conventions",
+  "category": "Architecture",
+  "artifactType": "rule",
+  "tags": ["monorepo", "architecture"],
+  "parameters": [
+    {
+      "key": "packageManager",
+      "label": "Package manager",
+      "fieldType": "select",
+      "default": "pnpm",
+      "options": ["pnpm", "npm", "yarn", "bun"]
+    },
+    {
+      "key": "sharedPackages",
+      "label": "Use shared packages",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Monorepo workspace conventions and package boundaries",
+    "alwaysApply": true
+  },
+  "bodyTemplate": "# Monorepo Conventions\n\n- Respect package boundaries; no cross-package deep imports\n- Place shared code in dedicated packages, not duplicated\n{{#if parameters.sharedPackages}}\n- Extract shared types, utils, and configs into `packages/` workspace\n{{/if}}\n- Run builds and tests from workspace root\n- Keep each package independently versionable\n",
+  "source": "awesome-cursorrules"
+}

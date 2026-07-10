@@ -1,0 +1,29 @@
+{
+  "id": "nextjs-app-router",
+  "name": "Next.js App Router",
+  "description": "Next.js 14+ App Router conventions",
+  "category": "Frontend",
+  "artifactType": "rule",
+  "tags": ["nextjs", "react", "frontend"],
+  "parameters": [
+    {
+      "key": "serverComponentsDefault",
+      "label": "Server Components by default",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "useTailwind",
+      "label": "Use Tailwind CSS",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Next.js App Router patterns and conventions",
+    "globs": "**/*.{tsx,ts}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Next.js App Router\n\n{{#if parameters.serverComponentsDefault}}\n- Default to Server Components; add `\"use client\"` only when needed\n{{/if}}\n- Place pages in `app/` directory with `page.tsx` and `layout.tsx`\n- Use `loading.tsx` and `error.tsx` for route-level states\n- Fetch data in Server Components, not in useEffect\n- Use `next/image` for all images\n{{#if parameters.useTailwind}}\n- Style with Tailwind CSS utility classes\n{{/if}}\n",
+  "source": "awesome-cursorrules"
+}

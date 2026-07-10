@@ -1,0 +1,28 @@
+{
+  "id": "documentation",
+  "name": "Documentation Standards",
+  "description": "Code and API documentation conventions",
+  "category": "Quality",
+  "artifactType": "rule",
+  "tags": ["docs", "documentation"],
+  "parameters": [
+    {
+      "key": "documentPublicApi",
+      "label": "Document all public APIs",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "updateReadme",
+      "label": "Update README for features",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Documentation standards for code and APIs",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Documentation Standards\n\n{{#if parameters.documentPublicApi}}\n- Document all public functions, classes, and APIs\n- Include parameter types, return types, and examples\n{{/if}}\n{{#if parameters.updateReadme}}\n- Update README when adding features or changing setup steps\n{{/if}}\n- Keep comments explaining *why*, not *what*\n- Remove outdated documentation when refactoring\n",
+  "source": "awesome-cursorrules"
+}

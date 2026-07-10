@@ -1,0 +1,29 @@
+{
+  "id": "api-design",
+  "name": "API Design",
+  "description": "REST API design conventions",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["api", "rest", "backend"],
+  "parameters": [
+    {
+      "key": "versioned",
+      "label": "Version APIs in URL",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "useOpenApi",
+      "label": "Document with OpenAPI",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "REST API design conventions and patterns",
+    "globs": "**/api/**,**/routes/**",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# API Design\n\n- Use nouns for resource paths, not verbs\n- Return appropriate HTTP status codes\n- Use consistent error response shape: `{ code, message, details }`\n{{#if parameters.versioned}}\n- Version APIs in URL path: `/api/v1/...`\n{{/if}}\n{{#if parameters.useOpenApi}}\n- Document all endpoints with OpenAPI/Swagger\n{{/if}}\n- Paginate list endpoints with cursor or offset pagination\n- Use ISO 8601 for all date/time fields\n",
+  "source": "awesome-cursorrules"
+}

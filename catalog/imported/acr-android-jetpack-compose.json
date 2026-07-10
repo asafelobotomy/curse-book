@@ -1,0 +1,20 @@
+{
+  "id": "acr-android-jetpack-compose",
+  "name": "Android Jetpack Compose",
+  "description": "Cursor rules for Android development with Jetpack Compose integration.",
+  "category": "Mobile",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Cursor rules for Android development with Jetpack Compose integration.",
+    "globs": "**/*",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "// Android Jetpack Compose .cursorrules\n\n// Flexibility Notice\n\n// Note: This is a recommended project structure, but be flexible and adapt to existing project structures.\n// Do not enforce these structural patterns if the project follows a different organization.\n// Focus on maintaining consistency with the existing project architecture while applying Jetpack Compose best practices.\n\n// Project Architecture and Best Practices\n\nconst androidJetpackComposeBestPractices = [\n    \"Adapt to existing project architecture while maintaining clean code principles\",\n    \"Follow Material Design 3 guidelines and components\",\n    \"Implement clean architecture with domain, data, and presentation layers\",\n    \"Use Kotlin coroutines and Flow for asynchronous operations\",\n    \"Implement dependency injection using Hilt\",\n    \"Follow unidirectional data flow with ViewModel and UI State\",\n    \"Use Compose navigation for screen management\",\n    \"Implement proper state hoisting and composition\",\n];\n\n// Folder Structure\n\n// Note: This is a reference structure. Adapt to the project's existing organization\n\nconst projectStructure = `\napp/\n  src/\n    main/\n      java/com/package/\n        data/\n          repository/\n          datasource/\n          models/\n        domain/\n          usecases/\n          models/\n          repository/\n        presentation/\n          screens/\n          components/\n          theme/\n          viewmodels/\n        di/\n        utils/\n      res/\n        values/\n        drawable/\n        mipmap/\n    test/\n    androidTest/\n`;\n\n// Compose UI Guidelines\n\nconst composeGuidelines = `\n1. Use remember and derivedStateOf appropriately\n2. Implement proper recomposition optimization\n3. Use proper Compose modifiers ordering\n4. Follow composable function naming conventions\n5. Implement proper preview annotations\n6. Use proper state management with MutableState\n7. Implement proper error handling and loading states\n8. Use proper theming with MaterialTheme\n9. Follow accessibility guidelines\n10. Implement proper animation patterns\n`;\n\n// Testing Guidelines\n\nconst testingGuidelines = `\n1. Write unit tests for ViewModels and UseCases\n2. Implement UI tests using Compose testing framework\n3. Use fake repositories for testing\n4. Implement proper test coverage\n5. Use proper testing coroutine dispatchers\n`;\n\n// Performance Guidelines\n\nconst performanceGuidelines = `\n1. Minimize recomposition using proper keys\n2. Use proper lazy loading with LazyColumn and LazyRow\n3. Implement efficient image loading\n4. Use proper state management to prevent unnecessary updates\n5. Follow proper lifecycle awareness\n6. Implement proper memory management\n7. Use proper background processing\n`;",
+  "source": "awesome-cursorrules"
+}
