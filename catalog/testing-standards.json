@@ -4,14 +4,23 @@
   "description": "Configurable testing conventions",
   "category": "Quality",
   "artifactType": "rule",
-  "tags": ["testing", "quality"],
+  "tags": [
+    "testing",
+    "quality",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "testFramework",
       "label": "Test framework",
       "fieldType": "select",
       "default": "vitest",
-      "options": ["vitest", "jest", "pytest", "go-test"]
+      "options": [
+        "vitest",
+        "jest",
+        "pytest",
+        "go-test"
+      ]
     },
     {
       "key": "coverageMin",
@@ -35,5 +44,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Testing Standards\n\n- Target minimum {{parameters.coverageMin}}% code coverage for new code\n- Write tests alongside new features, not as afterthoughts\n- Use descriptive test names: `should [expected] when [condition]`\n- Prefer unit tests for logic, integration tests for APIs\n{{#if parameters.requireE2E}}\n- Add E2E tests for all user-facing features\n{{/if}}\n- Never test implementation details; test behavior\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/testing-standards.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "testing-standards.json",
+  "highlights": [
+    "testing",
+    "TDD",
+    "coverage"
+  ],
+  "updatedAt": "2026-07-10"
 }

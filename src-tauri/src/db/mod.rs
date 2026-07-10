@@ -46,15 +46,18 @@ impl Database {
             .as_ref()
             .map(serde_json::to_string)
             .transpose()?;
+        let highlights = serde_json::to_string(&template.highlights)?;
 
         self.conn.execute(
-            "INSERT INTO templates (id, name, description, category, artifact_type, tags, parameters, rule_frontmatter, skill_frontmatter, body_template, source)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+            "INSERT INTO templates (id, name, description, category, artifact_type, tags, parameters, rule_frontmatter, skill_frontmatter, body_template, source, source_url, source_repo, source_path, highlights, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)
              ON CONFLICT(id) DO UPDATE SET
                name=excluded.name, description=excluded.description, category=excluded.category,
                artifact_type=excluded.artifact_type, tags=excluded.tags, parameters=excluded.parameters,
                rule_frontmatter=excluded.rule_frontmatter, skill_frontmatter=excluded.skill_frontmatter,
-               body_template=excluded.body_template, source=excluded.source",
+               body_template=excluded.body_template, source=excluded.source,
+               source_url=excluded.source_url, source_repo=excluded.source_repo,
+               source_path=excluded.source_path, highlights=excluded.highlights, updated_at=excluded.updated_at",
             params![
                 template.id,
                 template.name,
@@ -67,6 +70,11 @@ impl Database {
                 skill_fm,
                 template.body_template,
                 template.source,
+                template.source_url,
+                template.source_repo,
+                template.source_path,
+                highlights,
+                template.updated_at,
             ],
         )?;
         Ok(())
@@ -74,13 +82,14 @@ impl Database {
 
     pub fn list_templates(&self) -> DbResult<Vec<TemplateDefinition>> {
         let mut stmt = self.conn.prepare(
-            "SELECT id, name, description, category, artifact_type, tags, parameters, rule_frontmatter, skill_frontmatter, body_template, source FROM templates ORDER BY category, name",
+            "SELECT id, name, description, category, artifact_type, tags, parameters, rule_frontmatter, skill_frontmatter, body_template, source, source_url, source_repo, source_path, highlights, updated_at FROM templates ORDER BY category, name",
         )?;
         let rows = stmt.query_map([], |row| {
             let tags: String = row.get(5)?;
             let parameters: String = row.get(6)?;
             let rule_fm: Option<String> = row.get(7)?;
             let skill_fm: Option<String> = row.get(8)?;
+            let highlights: String = row.get(14).unwrap_or_else(|_| "[]".to_string());
             Ok(TemplateDefinition {
                 id: row.get(0)?,
                 name: row.get(1)?,
@@ -101,6 +110,11 @@ impl Database {
                     .flatten(),
                 body_template: row.get(9)?,
                 source: row.get(10)?,
+                source_url: row.get(11).ok(),
+                source_repo: row.get(12).ok(),
+                source_path: row.get(13).ok(),
+                highlights: serde_json::from_str(&highlights).unwrap_or_default(),
+                updated_at: row.get(15).ok(),
             })
         })?;
         rows.collect::<Result<Vec<_>, _>>().map_err(DbError::from)

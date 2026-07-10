@@ -6,7 +6,8 @@
   "artifactType": "rule",
   "tags": [
     "imported",
-    "awesome-cursorrules"
+    "awesome-cursorrules",
+    "anti overengineering"
   ],
   "parameters": [],
   "ruleFrontmatter": {
@@ -16,5 +17,17 @@
   },
   "skillFrontmatter": null,
   "bodyTemplate": "# Anti-Over-Engineering\n\nOnly change what was asked. Simplest solution first. When unsure, ask.\n\nDo not modify unrequested code, add abstractions without a concrete need, import unnecessary dependencies, rewrite entire files for small changes, or add error handling for impossible scenarios.\n\nBefore delivery: verify you only changed requested code, check for simpler approaches, confirm no unrequested files were touched.",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/anti-overengineering.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/anti-overengineering.mdc",
+  "highlights": [
+    "Anti",
+    "Over",
+    "Engineering",
+    "Only",
+    "Simplest",
+    "Before"
+  ],
+  "updatedAt": "2026-07-10"
 }

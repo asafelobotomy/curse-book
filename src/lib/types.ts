@@ -34,6 +34,11 @@ export interface TemplateDefinition {
   skillFrontmatter?: SkillFrontmatter;
   bodyTemplate: string;
   source?: string;
+  sourceUrl?: string;
+  sourceRepo?: string;
+  sourcePath?: string;
+  highlights?: string[];
+  updatedAt?: string;
 }
 
 export interface Preset {
@@ -63,6 +68,12 @@ export interface CompiledArtifact {
 
 export interface CompileResult {
   artifacts: CompiledArtifact[];
+  tokenEstimate: number;
+  lineCount: number;
+}
+
+export interface TemplateStats {
+  templateId: string;
   tokenEstimate: number;
   lineCount: number;
 }

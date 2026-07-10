@@ -4,7 +4,11 @@
   "description": "Core TypeScript coding standards with configurable strictness",
   "category": "Languages",
   "artifactType": "rule",
-  "tags": ["typescript", "standards"],
+  "tags": [
+    "typescript",
+    "standards",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "strictNullChecks",
@@ -40,5 +44,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# TypeScript Standards\n\n{{#if parameters.strictNullChecks}}\n- Enable strict null checks; never use `any` to bypass nullability\n- Use optional chaining and nullish coalescing over manual null checks\n{{/if}}\n{{#if parameters.preferInterfaces}}\n- Prefer `interface` over `type` for object shapes\n{{/if}}\n- Keep functions under {{parameters.maxFunctionLines}} lines; extract helpers when larger\n{{#if parameters.strictErrors}}\n- Never swallow errors in empty catch blocks\n- Wrap errors with context using `cause` when re-throwing\n- Define typed error classes for domain failures\n{{/if}}\n- Use exhaustive switch with `never` check in default case for discriminated unions\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/typescript-standards.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "typescript-standards.json",
+  "highlights": [
+    "TypeScript",
+    "strict null checks",
+    "interfaces"
+  ],
+  "updatedAt": "2026-07-10"
 }

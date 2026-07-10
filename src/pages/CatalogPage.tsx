@@ -1,17 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
+import { CatalogCard } from "../components/catalog/CatalogCard";
+import { CatalogDetailDrawer } from "../components/catalog/CatalogDetailDrawer";
+import { CatalogFilterBar } from "../components/catalog/CatalogFilterBar";
 import { api } from "../lib/api";
+import {
+  collectUniqueTags,
+  sortTemplates,
+  type SortOption,
+} from "../lib/catalog";
 import type { TemplateDefinition } from "../lib/types";
-import { artifactBadge } from "../lib/utils";
-import { Badge, Button, Card } from "../components/ui";
 
 export function CatalogPage() {
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<TemplateDefinition[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [activeTags, setActiveTags] = useState<Set<string>>(new Set());
+  const [artifactFilter, setArtifactFilter] = useState<"all" | "rule" | "skill">("all");
+  const [sort, setSort] = useState<SortOption>("name-asc");
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateDefinition | null>(null);
+  const [tokenStats, setTokenStats] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,21 +34,54 @@ export function CatalogPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (templates.length === 0) return;
+    const ids = templates.map((t) => t.id);
+    api
+      .getTemplateStats(ids)
+      .then((stats) => {
+        const map: Record<string, number> = {};
+        for (const s of stats) map[s.templateId] = s.tokenEstimate;
+        setTokenStats(map);
+      })
+      .catch(() => {});
+  }, [templates]);
+
   const categories = useMemo(() => {
     const cats = new Set(templates.map((t) => t.category));
     return ["all", ...Array.from(cats).sort()];
   }, [templates]);
 
-  const filtered = templates.filter((t) => {
+  const allTags = useMemo(() => collectUniqueTags(templates), [templates]);
+
+  const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    const matchesSearch =
-      !q ||
-      t.name.toLowerCase().includes(q) ||
-      t.description.toLowerCase().includes(q) ||
-      t.tags.some((tag) => tag.toLowerCase().includes(q));
-    const matchesCategory = category === "all" || t.category === category;
-    return matchesSearch && matchesCategory;
-  });
+    const base = templates.filter((t) => {
+      const matchesSearch =
+        !q ||
+        t.name.toLowerCase().includes(q) ||
+        t.description.toLowerCase().includes(q) ||
+        t.tags.some((tag) => tag.toLowerCase().includes(q)) ||
+        (t.highlights ?? []).some((h) => h.toLowerCase().includes(q));
+      const matchesCategory = category === "all" || t.category === category;
+      const matchesArtifact =
+        artifactFilter === "all" || t.artifactType === artifactFilter;
+      const matchesTags =
+        activeTags.size === 0 ||
+        Array.from(activeTags).every((tag) => t.tags.includes(tag));
+      return matchesSearch && matchesCategory && matchesArtifact && matchesTags;
+    });
+    return sortTemplates(base, sort, tokenStats);
+  }, [templates, search, category, artifactFilter, activeTags, sort, tokenStats]);
+
+  const toggleTag = useCallback((tag: string) => {
+    setActiveTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
+      return next;
+    });
+  }, []);
 
   const addToLibrary = async (template: TemplateDefinition) => {
     try {
@@ -49,8 +93,10 @@ export function CatalogPage() {
     }
   };
 
+  const drawerOpen = selectedTemplate !== null;
+
   return (
-    <div className="p-6 max-w-6xl">
+    <div className={`p-6 max-w-7xl transition-all ${drawerOpen ? "pr-[50%]" : ""}`}>
       <header className="mb-6">
         <h2 className="text-2xl font-bold">Template Catalog</h2>
         <p className="text-[var(--color-text-muted)] mt-1">
@@ -58,7 +104,7 @@ export function CatalogPage() {
         </p>
       </header>
 
-      <div className="flex gap-3 mb-6">
+      <div className="flex gap-3 mb-4">
         <div className="relative flex-1">
           <Search
             size={16}
@@ -85,41 +131,51 @@ export function CatalogPage() {
         </select>
       </div>
 
+      <CatalogFilterBar
+        tags={allTags}
+        activeTags={activeTags}
+        artifactFilter={artifactFilter}
+        sort={sort}
+        onTagClick={toggleTag}
+        onArtifactFilterChange={setArtifactFilter}
+        onSortChange={setSort}
+        onClearTags={() => setActiveTags(new Set())}
+      />
+
       {loading ? (
         <p className="text-[var(--color-text-muted)]">Loading catalog...</p>
+      ) : filtered.length === 0 ? (
+        <p className="text-[var(--color-text-muted)]">No templates match your filters.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          className={`grid gap-4 ${
+            drawerOpen
+              ? "grid-cols-1 lg:grid-cols-2"
+              : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
           {filtered.map((template) => (
-            <Card key={template.id} className="flex flex-col">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="font-semibold">{template.name}</h3>
-                <Badge>{artifactBadge(template.artifactType)}</Badge>
-              </div>
-              <p className="text-sm text-[var(--color-text-muted)] flex-1 mb-3">
-                {template.description}
-              </p>
-              <div className="flex flex-wrap gap-1 mb-3">
-                {template.tags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-1.5 py-0.5 rounded bg-[var(--color-surface-overlay)] text-[var(--color-text-muted)]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[var(--color-text-muted)]">
-                  {template.parameters.length} parameters
-                </span>
-                <Button size="sm" onClick={() => addToLibrary(template)}>
-                  Add to library
-                </Button>
-              </div>
-            </Card>
+            <CatalogCard
+              key={template.id}
+              template={template}
+              activeTags={activeTags}
+              tokenEstimate={tokenStats[template.id]}
+              onSelect={setSelectedTemplate}
+              onTagClick={toggleTag}
+              onAddToLibrary={addToLibrary}
+            />
           ))}
         </div>
       )}
+
+      <CatalogDetailDrawer
+        template={selectedTemplate}
+        searchQuery={search}
+        activeTags={activeTags}
+        onClose={() => setSelectedTemplate(null)}
+        onTagClick={toggleTag}
+        onAddToLibrary={addToLibrary}
+      />
     </div>
   );
 }

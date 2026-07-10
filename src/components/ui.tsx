@@ -33,12 +33,15 @@ export function Button({
 export function Card({
   className,
   children,
+  onClick,
 }: {
   className?: string;
   children: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }) {
   return (
     <div
+      onClick={onClick}
       className={cn(
         "rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-4",
         className,

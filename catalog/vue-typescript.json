@@ -4,7 +4,12 @@
   "description": "Vue 3 Composition API with TypeScript",
   "category": "Frontend",
   "artifactType": "rule",
-  "tags": ["vue", "typescript", "frontend"],
+  "tags": [
+    "vue",
+    "typescript",
+    "frontend",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "compositionApi",
@@ -25,5 +30,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Vue 3 + TypeScript\n\n{{#if parameters.compositionApi}}\n- Use Composition API with `<script setup lang=\"ts\">`\n- Extract reusable logic into composables in `composables/`\n{{/if}}\n- Define props with `defineProps<T>()` and emits with `defineEmits<T>()`\n{{#if parameters.usePinia}}\n- Use Pinia stores for shared state\n{{/if}}\n- Keep components focused; split large SFCs into smaller ones\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/vue-typescript.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "vue-typescript.json",
+  "highlights": [
+    "Vue",
+    "TypeScript",
+    "Composition API"
+  ],
+  "updatedAt": "2026-07-10"
 }

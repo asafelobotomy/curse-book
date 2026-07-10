@@ -6,7 +6,9 @@
   "artifactType": "rule",
   "tags": [
     "imported",
-    "awesome-cursorrules"
+    "awesome-cursorrules",
+    "python",
+    "blender python addon"
   ],
   "parameters": [],
   "ruleFrontmatter": {
@@ -16,5 +18,17 @@
   },
   "skillFrontmatter": null,
   "bodyTemplate": "# Blender Python Add-on Rules\n\n## Add-on Structure\n\n- Keep add-on entry points in `__init__.py` with clear `register()` and `unregister()` functions.\n- Group operators, panels, properties, preferences, and utilities into separate modules for non-trivial add-ons.\n- Use `bl_info` or `blender_manifest.toml` according to the Blender version and packaging target.\n- Keep UI labels concise and user-facing text translatable where appropriate.\n\n## API Usage\n\n- Use `bpy.types.Operator` for actions, `bpy.types.Panel` for UI, and `bpy.types.PropertyGroup` for grouped settings.\n- Define `bl_idname`, `bl_label`, and `bl_options` explicitly.\n- Validate context in `poll()` before enabling operators.\n- Use `invoke()` for interactive setup and `execute()` for the actual operation.\n- Return `{'FINISHED'}` or `{'CANCELLED'}` consistently.\n- Use dependency graph updates and evaluated objects when reading final scene state.\n\n## Data and Properties\n\n- Register custom properties through `PropertyGroup` classes instead of loose global state.\n- Store add-on preferences in `AddonPreferences`.\n- Use `PointerProperty`, `CollectionProperty`, and typed properties with names and descriptions.\n- Clean up custom properties and handlers during `unregister()`.\n\n## Safety and Performance\n\n- Do not run destructive scene operations without explicit user action.\n- Avoid blocking UI work in modal operators; use timers or modal state machines for long operations.\n- Batch mesh changes and use `bmesh` when editing mesh data programmatically.\n- Avoid repeatedly scanning large scenes in draw methods.\n- Keep file paths configurable and use Blender path utilities.\n\n## Testing and Debugging\n\n- Test scripts in a clean Blender profile and a representative production scene.\n- Add smoke tests that import the add-on, register it, run core operators, and unregister cleanly.\n- Log actionable messages with `self.report()` for user-facing operator feedback.\n- Keep version-specific API differences isolated behind helper functions.\n\n## Common Mistakes\n\n- Do not forget to unregister classes, handlers, timers, and keymaps.\n- Do not mutate Blender data from panel `draw()` methods.\n- Do not assume an active object, selected object, or mode without checking context.\n- Do not hardcode absolute asset paths.",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/blender-python-addon.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/blender-python-addon.mdc",
+  "highlights": [
+    "Python",
+    "Blender",
+    "Rules",
+    "Structure",
+    "Keep",
+    "Group"
+  ],
+  "updatedAt": "2026-07-10"
 }

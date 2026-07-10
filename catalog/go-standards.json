@@ -4,7 +4,11 @@
   "description": "Go idiomatic patterns and conventions",
   "category": "Languages",
   "artifactType": "rule",
-  "tags": ["go", "golang"],
+  "tags": [
+    "go",
+    "golang",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "useContext",
@@ -25,5 +29,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Go Standards\n\n- Follow standard Go project layout\n- Handle all errors explicitly; never ignore returned errors\n{{#if parameters.useContext}}\n- Pass `context.Context` as first parameter to I/O functions\n{{/if}}\n- Use `gofmt` and `golangci-lint` before committing\n{{#if parameters.tableDrivenTests}}\n- Write table-driven tests with `t.Run` subtests\n{{/if}}\n- Prefer composition over inheritance\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/go-standards.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "go-standards.json",
+  "highlights": [
+    "Go",
+    "error handling",
+    "idioms"
+  ],
+  "updatedAt": "2026-07-10"
 }

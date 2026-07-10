@@ -43,3 +43,48 @@ body {
   background: var(--color-border);
   border-radius: 4px;
 }
+
+/* Catalog UI */
+.catalog-card:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+.catalog-drawer {
+  animation: drawer-slide-in 0.2s ease-out;
+}
+
+.catalog-drawer-backdrop {
+  animation: fade-in 0.15s ease-out;
+}
+
+@keyframes drawer-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Monaco highlight decorations */
+.monaco-highlight-search-inline {
+  background-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+.monaco-highlight-term-inline {
+  background-color: rgba(124, 106, 247, 0.35) !important;
+}
+
+.monaco-highlight-handlebars-inline {
+  background-color: rgba(251, 191, 36, 0.25) !important;
+  border-bottom: 1px dashed var(--color-warning);
+}

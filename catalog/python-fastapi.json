@@ -4,7 +4,12 @@
   "description": "FastAPI backend conventions and patterns",
   "category": "Backend",
   "artifactType": "rule",
-  "tags": ["python", "fastapi", "backend"],
+  "tags": [
+    "python",
+    "fastapi",
+    "backend",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "typeHints",
@@ -17,7 +22,11 @@
       "label": "Input validation",
       "fieldType": "select",
       "default": "pydantic",
-      "options": ["pydantic", "manual", "both"]
+      "options": [
+        "pydantic",
+        "manual",
+        "both"
+      ]
     },
     {
       "key": "asyncPreferred",
@@ -32,5 +41,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Python FastAPI Standards\n\n{{#if parameters.typeHints}}\n- Add type hints to all function signatures and return types\n{{/if}}\n{{#if parameters.asyncPreferred}}\n- Use `async def` for I/O-bound endpoints\n{{/if}}\n- Define Pydantic models for request/response schemas\n- Keep route handlers thin; delegate business logic to service layer\n- Return structured error responses with `HTTPException` and consistent error codes\n- Use dependency injection for database sessions and auth\n- Place routers in `routers/`, services in `services/`, models in `models/`\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/python-fastapi.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "python-fastapi.json",
+  "highlights": [
+    "Python",
+    "FastAPI",
+    "Pydantic"
+  ],
+  "updatedAt": "2026-07-10"
 }

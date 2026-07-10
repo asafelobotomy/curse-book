@@ -35,6 +35,16 @@ pub struct TemplateDefinition {
     pub body_template: String,
     #[serde(default)]
     pub source: Option<String>,
+    #[serde(default)]
+    pub source_url: Option<String>,
+    #[serde(default)]
+    pub source_repo: Option<String>,
+    #[serde(default)]
+    pub source_path: Option<String>,
+    #[serde(default)]
+    pub highlights: Vec<String>,
+    #[serde(default)]
+    pub updated_at: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -174,4 +184,12 @@ pub struct CursePackManifest {
     pub description: String,
     pub author: String,
     pub templates: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateStats {
+    pub template_id: String,
+    pub token_estimate: u32,
+    pub line_count: u32,
 }

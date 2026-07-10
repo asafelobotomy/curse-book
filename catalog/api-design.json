@@ -4,7 +4,12 @@
   "description": "REST API design conventions",
   "category": "Backend",
   "artifactType": "rule",
-  "tags": ["api", "rest", "backend"],
+  "tags": [
+    "api",
+    "rest",
+    "backend",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "versioned",
@@ -25,5 +30,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# API Design\n\n- Use nouns for resource paths, not verbs\n- Return appropriate HTTP status codes\n- Use consistent error response shape: `{ code, message, details }`\n{{#if parameters.versioned}}\n- Version APIs in URL path: `/api/v1/...`\n{{/if}}\n{{#if parameters.useOpenApi}}\n- Document all endpoints with OpenAPI/Swagger\n{{/if}}\n- Paginate list endpoints with cursor or offset pagination\n- Use ISO 8601 for all date/time fields\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/api-design.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "api-design.json",
+  "highlights": [
+    "REST",
+    "API design",
+    "OpenAPI"
+  ],
+  "updatedAt": "2026-07-10"
 }

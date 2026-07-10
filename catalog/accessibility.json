@@ -4,14 +4,23 @@
   "description": "Web accessibility standards",
   "category": "Frontend",
   "artifactType": "rule",
-  "tags": ["a11y", "accessibility", "frontend"],
+  "tags": [
+    "a11y",
+    "accessibility",
+    "frontend",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "wcagLevel",
       "label": "WCAG level",
       "fieldType": "select",
       "default": "AA",
-      "options": ["A", "AA", "AAA"]
+      "options": [
+        "A",
+        "AA",
+        "AAA"
+      ]
     },
     {
       "key": "keyboardNav",
@@ -26,5 +35,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Accessibility Standards\n\n- Target WCAG {{parameters.wcagLevel}} compliance\n- Use semantic HTML elements (`button`, `nav`, `main`, etc.)\n- Add `alt` text to all meaningful images\n- Ensure sufficient color contrast (4.5:1 for text)\n{{#if parameters.keyboardNav}}\n- All interactive elements must be keyboard accessible\n- Visible focus indicators on all focusable elements\n{{/if}}\n- Use ARIA attributes only when semantic HTML is insufficient\n- Test with screen reader patterns in mind\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/accessibility.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "accessibility.json",
+  "highlights": [
+    "accessibility",
+    "a11y",
+    "WCAG"
+  ],
+  "updatedAt": "2026-07-10"
 }

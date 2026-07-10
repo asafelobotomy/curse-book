@@ -6,7 +6,9 @@
   "artifactType": "rule",
   "tags": [
     "imported",
-    "awesome-cursorrules"
+    "awesome-cursorrules",
+    "ai",
+    "cloudflare email telegram"
   ],
   "parameters": [],
   "ruleFrontmatter": {
@@ -16,5 +18,17 @@
   },
   "skillFrontmatter": null,
   "bodyTemplate": "You are an expert at setting up email-to-Telegram forwarding using Cloudflare Email Routing and Workers.\n\nWhen the user asks to set up email forwarding to Telegram, route domain email to Telegram, or mentions \"mail2tg\", \"email to telegram\", follow this workflow.\n\n## Tool\n\nUse the `mail2tg` CLI published on npm: https://www.npmjs.com/package/mail2tg\nSource: https://github.com/shatzibitten/mail2tg\n\n## Prerequisites\n\n1. Domain DNS managed by Cloudflare (nameservers pointing to Cloudflare, status \"Active\").\n2. Cloudflare API token with scopes: Zone Read, DNS Edit, Worker Scripts Edit, Email Routing Rules Edit. Create at dash.cloudflare.com/profile/api-tokens → \"Create Custom Token\".\n3. Telegram bot created via @BotFather, token copied. User has sent /start to the bot.\n4. Node.js >= 20.\n\n## Plan-first workflow\n\n```bash\nexport CLOUDFLARE_API_TOKEN=\"<token>\"\nexport TELEGRAM_BOT_TOKEN=\"<bot-token>\"\n\n# Replace <reviewed-version> only after reviewing the npm package and source.\nMAIL2TG_DOMAIN=example.com \\\nMAIL2TG_MAILBOX=info@example.com \\\nnpx -y mail2tg@<reviewed-version> init --json\n\nnpx -y mail2tg@<reviewed-version> plan --json\n\n# Stop here, show the plan to the user, and wait for explicit approval.\nnpx -y mail2tg@<reviewed-version> apply --json\nnpx -y mail2tg@<reviewed-version> doctor --json\n```\n\n## Interactive workflow\n\n```bash\nnpx -y mail2tg@<reviewed-version> init\nexport CLOUDFLARE_API_TOKEN=\"<token>\"\nexport TELEGRAM_BOT_TOKEN=\"<bot-token>\"\nnpx -y mail2tg@<reviewed-version> plan\n\n# Stop here, show the plan to the user, and wait for explicit approval.\nnpx -y mail2tg@<reviewed-version> apply\nnpx -y mail2tg@<reviewed-version> doctor\n```\n\n## What it does\n\n- Deploys a Cloudflare Worker that parses incoming emails (MIME) and forwards headers, body, and attachments (up to 50 MB) to a Telegram chat via Bot API.\n- Creates MX and SPF DNS records so Cloudflare receives mail for the domain.\n- Creates an Email Routing rule directing the configured address to the Worker.\n- Sets Worker secrets (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID).\n\nAfter apply, nothing runs locally. Everything is serverless on Cloudflare's edge. Free tier covers 100K emails/day.\n\n## Exit codes\n\n- 0: success\n- 2: missing config or env vars\n- 3: Cloudflare/Telegram API error\n- 4: doctor checks failed\n- 5: worker deployment failed\n\n## Common issues\n\n- \"Telegram chat_id not found\" → user must send /start to the bot, then re-run.\n- \"Cloudflare zone not found\" → domain not on Cloudflare or token lacks Zone Read scope.\n- \"Worker deployment failed\" → check internet; run `npx wrangler whoami` to debug.",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cloudflare-email-telegram-cursorrules-prompt-file.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/cloudflare-email-telegram-cursorrules-prompt-file.mdc",
+  "highlights": [
+    "Telegram",
+    "Cloudflare",
+    "Email",
+    "Routing",
+    "Workers",
+    "Tool"
+  ],
+  "updatedAt": "2026-07-10"
 }

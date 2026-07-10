@@ -4,7 +4,12 @@
   "description": "Structured code review with configurable thoroughness",
   "category": "Workflow",
   "artifactType": "skill",
-  "tags": ["review", "quality", "pr"],
+  "tags": [
+    "review",
+    "quality",
+    "pr",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "deepReview",
@@ -31,5 +36,13 @@
     "disableModelInvocation": true
   },
   "bodyTemplate": "# Code Review\n\n## Checklist\n\n- [ ] Logic is correct and handles edge cases\n{{#if parameters.checkSecurity}}\n- [ ] No security vulnerabilities (injection, XSS, auth bypass)\n{{/if}}\n- [ ] Code follows project style conventions\n- [ ] Functions are appropriately sized and focused\n{{#if parameters.checkTests}}\n- [ ] Tests cover the changes adequately\n{{/if}}\n{{#if parameters.deepReview}}\n- [ ] Error handling is comprehensive\n- [ ] No unnecessary complexity or over-engineering\n- [ ] Performance implications considered\n- [ ] Documentation updated where needed\n{{/if}}\n\n## Feedback format\n\n- **Critical**: Must fix before merge\n- **Suggestion**: Consider improving\n- **Nice to have**: Optional enhancement\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/code-review.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "code-review.json",
+  "highlights": [
+    "code review",
+    "pull requests"
+  ],
+  "updatedAt": "2026-07-10"
 }

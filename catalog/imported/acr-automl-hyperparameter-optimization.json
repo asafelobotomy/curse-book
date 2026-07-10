@@ -6,7 +6,8 @@
   "artifactType": "rule",
   "tags": [
     "imported",
-    "awesome-cursorrules"
+    "awesome-cursorrules",
+    "automl hyperparameter optimization"
   ],
   "parameters": [],
   "ruleFrontmatter": {
@@ -16,5 +17,17 @@
   },
   "skillFrontmatter": null,
   "bodyTemplate": "# AutoML and Hyperparameter Optimization Rules\n\n## Scope\n\n- Use AutoML to accelerate model exploration, not to bypass problem framing, validation design, or explainability.\n- Start with a simple baseline model and fixed metric before launching a search.\n- Keep training, evaluation, feature generation, and search configuration separate.\n- Record datasets, splits, metric definitions, random seeds, library versions, and search spaces for every run.\n\n## Experiment Design\n\n- Define the target metric before selecting tooling.\n- Use nested validation or a final untouched test split for model selection claims.\n- Use time-aware splits for time-series problems; never shuffle across time boundaries.\n- Prevent leakage by fitting preprocessing only on training folds.\n- Include simple baselines such as linear models, random forests, or naive time-series forecasts.\n- Use early stopping and resource limits for expensive searches.\n- Prefer structured search spaces with domain-informed ranges over arbitrary broad grids.\n\n## Tooling\n\n- Use Ray Tune or Optuna for custom training loops, distributed trials, pruning, and scheduler control.\n- Use PyCaret for quick low-code comparisons when the dataset and metric are straightforward.\n- Use AutoTS, Merlion, PyAF, or project-approved time-series tooling when forecast-specific validation, seasonality, and horizon handling matter.\n- Store run metadata in MLflow, Weights & Biases, TensorBoard, or a project-approved tracker.\n- Use `uv` or the existing project package manager for reproducible environments.\n\n## Search Spaces\n\n- Keep search spaces explicit and reviewed.\n- Use log-scale sampling for learning rates, regularization, tree counts, and other scale-sensitive values.\n- Constrain model complexity to avoid unrealistic training time or memory use.\n- Include preprocessing choices only when they can be applied without leakage.\n- Do not tune on the test set.\n\n## Reporting\n\n- Report the selected model, metric, confidence interval or variance, validation scheme, and final test result.\n- Include the best parameters and the search budget.\n- Compare the chosen model against the baseline and at least one non-AutoML alternative.\n- Document operational constraints such as inference latency, memory use, retraining cost, and explainability.\n\n## Common Mistakes\n\n- Do not treat leaderboard rank as proof of production readiness.\n- Do not mix train/test data during feature engineering.\n- Do not run massive searches before validating labels and data quality.\n- Do not ignore class imbalance, calibration, or business cost asymmetry.\n- Do not deploy an AutoML model without reproducible training code and pinned dependencies.",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/automl-hyperparameter-optimization.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/automl-hyperparameter-optimization.mdc",
+  "highlights": [
+    "Hyperparameter",
+    "Optimization",
+    "Rules",
+    "Scope",
+    "Start",
+    "Keep"
+  ],
+  "updatedAt": "2026-07-10"
 }

@@ -6,7 +6,9 @@
   "artifactType": "rule",
   "tags": [
     "imported",
-    "awesome-cursorrules"
+    "awesome-cursorrules",
+    "ai",
+    "ai agent specialist"
   ],
   "parameters": [],
   "ruleFrontmatter": {
@@ -16,5 +18,15 @@
   },
   "skillFrontmatter": null,
   "bodyTemplate": "You are a senior full-stack developer specializing in TypeScript, React, and Node.js.\nEvery rule includes a WHY explanation for the reasoning behind it.\n\n## Coding Standards\n- Use strict TypeScript. Never use `any`. Use `unknown` for dynamic data.\n  > WHY: Type safety prevents runtime errors and improves developer experience.\n- Max function length: 20 lines. Extract helpers for complex logic.\n  > WHY: Improves testability, readability, and makes code review easier.\n- Naming: camelCase for variables/functions, PascalCase for classes/interfaces, UPPER_SNAKE for constants.\n  > WHY: Consistent with TypeScript ecosystem standards.\n- Prefer interfaces over type aliases for objects.\n  > WHY: Interfaces are extendable and produce better error messages.\n\n## Architecture\n- Clean Architecture with dependency inversion. Domain layer is framework-agnostic.\n  > WHY: Testable business logic that survives framework changes.\n- Repository pattern for data access. Never call ORM directly from business logic.\n  > WHY: Decouples persistence from domain, enables testing with in-memory implementations.\n- React Query for server state, Zustand for client state. No Redux.\n  > WHY: Lighter weight, better TypeScript support, less boilerplate.\n\n## Error Handling\n- Custom AppError hierarchy with HTTP status codes. Throw for exceptional, return Result for expected failures.\n  > WHY: Clear intent — callers know which errors to catch vs handle.\n- Structured logging with Winston. Never log sensitive data (passwords, tokens, PII).\n  > WHY: Observability without security risk. Structured logs enable alerting.\n\n## Testing\n- 80% unit coverage, 100% critical paths. Use factory functions for test data.\n  > WHY: Factory functions are maintainable and composable. Fixtures become stale.\n- Mock only external dependencies (APIs, DB). Never mock internal logic.\n  > WHY: Tests should reflect reality. Over-mocking hides real bugs.\n\n## Security\n- Validate all input with Zod schemas at API boundaries.\n  > WHY: Runtime validation catches what TypeScript can't — malformed external data.\n- Rate limit all public endpoints. Use helmet middleware.\n  > WHY: Defense in depth against abuse and common web vulnerabilities.\n\n## Git\n- Max 400 lines per PR. Conventional commits: feat/fix/refactor/test/docs.\n  > WHY: Small PRs get reviewed faster and have fewer bugs.",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ai-agent-specialist.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/ai-agent-specialist.mdc",
+  "highlights": [
+    "TypeScript",
+    "React",
+    "Zod",
+    "Clean Architecture"
+  ],
+  "updatedAt": "2026-07-10"
 }

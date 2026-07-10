@@ -4,7 +4,12 @@
   "description": "Tailwind CSS styling conventions",
   "category": "Frontend",
   "artifactType": "rule",
-  "tags": ["tailwind", "css", "frontend"],
+  "tags": [
+    "tailwind",
+    "css",
+    "frontend",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "mobileFirst",
@@ -25,5 +30,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Tailwind CSS\n\n- Use utility classes directly in JSX/template\n- Avoid `@apply` except in rare design-token cases\n{{#if parameters.mobileFirst}}\n- Design mobile-first; use `sm:`, `md:`, `lg:` breakpoints progressively\n{{/if}}\n{{#if parameters.useCva}}\n- Use `class-variance-authority` for component variants\n{{/if}}\n- Extract repeated class strings into component props, not CSS files\n- Use Tailwind's design tokens (spacing, colors) consistently\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/tailwind-css.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "tailwind-css.json",
+  "highlights": [
+    "Tailwind",
+    "CSS",
+    "utility-first"
+  ],
+  "updatedAt": "2026-07-10"
 }

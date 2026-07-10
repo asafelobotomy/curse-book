@@ -11,6 +11,7 @@ import type {
   ProjectProfile,
   SyncStatus,
   TemplateDefinition,
+  TemplateStats,
 } from "./types";
 
 export const api = {
@@ -29,6 +30,10 @@ export const api = {
     parameters: Record<string, unknown>,
   ) =>
     invoke<CompileResult>("compile_preview_cmd", { template, parameters }),
+  getTemplateStats: (templateIds: string[]) =>
+    invoke<TemplateStats[]>("get_template_stats", {
+      templateIds,
+    }),
   scanProjects: (roots?: string[]) =>
     invoke<ProjectProfile[]>("scan_projects", { roots }),
   listProjects: () => invoke<ProjectProfile[]>("list_projects"),

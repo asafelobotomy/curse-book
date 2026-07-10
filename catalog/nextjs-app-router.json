@@ -4,7 +4,12 @@
   "description": "Next.js 14+ App Router conventions",
   "category": "Frontend",
   "artifactType": "rule",
-  "tags": ["nextjs", "react", "frontend"],
+  "tags": [
+    "nextjs",
+    "react",
+    "frontend",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "serverComponentsDefault",
@@ -25,5 +30,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Next.js App Router\n\n{{#if parameters.serverComponentsDefault}}\n- Default to Server Components; add `\"use client\"` only when needed\n{{/if}}\n- Place pages in `app/` directory with `page.tsx` and `layout.tsx`\n- Use `loading.tsx` and `error.tsx` for route-level states\n- Fetch data in Server Components, not in useEffect\n- Use `next/image` for all images\n{{#if parameters.useTailwind}}\n- Style with Tailwind CSS utility classes\n{{/if}}\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/nextjs-app-router.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "nextjs-app-router.json",
+  "highlights": [
+    "Next.js",
+    "App Router",
+    "React"
+  ],
+  "updatedAt": "2026-07-10"
 }

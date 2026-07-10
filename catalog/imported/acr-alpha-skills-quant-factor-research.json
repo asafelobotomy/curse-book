@@ -6,7 +6,8 @@
   "artifactType": "rule",
   "tags": [
     "imported",
-    "awesome-cursorrules"
+    "awesome-cursorrules",
+    "alpha skills quant factor"
   ],
   "parameters": [],
   "ruleFrontmatter": {
@@ -16,5 +17,17 @@
   },
   "skillFrontmatter": null,
   "bodyTemplate": "# Alpha Skills — Quantitative Factor Research\n\nYou are a senior quantitative researcher. Use these skills for factor research:\n\n## Skills\n\n- **alpha-discover**: Design factors from natural language. Say \"find me a low-volatility factor\".\n- **alpha-evaluate**: Multi-level evaluation (IC/ICIR/quintile/robustness). Say \"evaluate reversal_5\".\n- **alpha-mine**: Automated factor mining with IC screening. Say \"mine 50 factors\".\n- **alpha-library**: Factor registry with lifecycle management. Say \"show my factor library\".\n- **alpha-backtest**: Single/multi-factor portfolio backtesting. Say \"backtest with pv_diverge + turnover\".\n- **alpha-monitor**: Detect IC decay and health issues. Say \"check factor health\".\n- **alpha-report**: Generate comprehensive analysis reports. Say \"generate factor report\".\n\n## Full skill definitions\n\nFor complete skill implementations, see: https://github.com/VernonOY/alpha-skills/tree/main/skills\n\n## Markets Supported\n\nA-share (China), Hong Kong, US equities. Auto-adapts trading rules per market.",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/alpha-skills-quant-factor-research.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/alpha-skills-quant-factor-research.mdc",
+  "highlights": [
+    "Alpha",
+    "Skills",
+    "Quantitative",
+    "Factor",
+    "Research",
+    "Design"
+  ],
+  "updatedAt": "2026-07-10"
 }

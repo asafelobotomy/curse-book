@@ -95,5 +95,10 @@ pub fn normalize_legacy_cursorrules(
         skill_frontmatter: None,
         body_template: content.to_string(),
         source: Some("awesome-cursorrules".to_string()),
+        source_url: None,
+        source_repo: None,
+        source_path: None,
+        highlights: vec![],
+        updated_at: None,
     }
 }

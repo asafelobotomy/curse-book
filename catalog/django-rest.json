@@ -4,7 +4,12 @@
   "description": "DRF API conventions",
   "category": "Backend",
   "artifactType": "rule",
-  "tags": ["python", "django", "api"],
+  "tags": [
+    "python",
+    "django",
+    "api",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "useSerializers",
@@ -25,5 +30,14 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Django REST Framework\n\n{{#if parameters.useSerializers}}\n- Validate all input through DRF serializers\n- Never trust raw request.data without validation\n{{/if}}\n{{#if parameters.useViewSets}}\n- Use ViewSets with routers for CRUD endpoints\n{{/if}}\n- Keep views thin; business logic in services or models\n- Use pagination for list endpoints\n- Return consistent error response format\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/django-rest.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "django-rest.json",
+  "highlights": [
+    "Django",
+    "REST",
+    "Python"
+  ],
+  "updatedAt": "2026-07-10"
 }

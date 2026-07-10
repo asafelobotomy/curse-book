@@ -114,6 +114,37 @@ fn compile_preview_cmd(
 }
 
 #[tauri::command]
+fn get_template_stats(
+    state: State<AppState>,
+    template_ids: Vec<String>,
+) -> Result<Vec<TemplateStats>, String> {
+    with_db(&state, |db| {
+        let mut stats = Vec::new();
+        for id in template_ids {
+            let template = db
+                .get_template(&id)
+                .map_err(|e| e.to_string())?
+                .ok_or_else(|| format!("Template not found: {id}"))?;
+
+            let mut parameters = HashMap::new();
+            for field in &template.parameters {
+                parameters.insert(field.key.clone(), field.default.clone());
+            }
+
+            let result = compiler::compile_preview(&template, &parameters)
+                .map_err(|e| e.to_string())?;
+
+            stats.push(TemplateStats {
+                template_id: id,
+                token_estimate: result.token_estimate,
+                line_count: result.line_count,
+            });
+        }
+        Ok(stats)
+    })
+}
+
+#[tauri::command]
 fn scan_projects(state: State<AppState>, roots: Option<Vec<String>>) -> Result<Vec<ProjectProfile>, String> {
     let scan_roots = roots.unwrap_or_else(scanner::default_scan_roots);
     let discovered = scanner::scan_directories(&scan_roots, 4);
@@ -313,6 +344,7 @@ pub fn run() {
             delete_preset,
             compile_preset_cmd,
             compile_preview_cmd,
+            get_template_stats,
             scan_projects,
             list_projects,
             save_project,

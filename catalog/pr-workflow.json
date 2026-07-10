@@ -4,7 +4,12 @@
   "description": "Pull request creation and review workflow",
   "category": "Workflow",
   "artifactType": "skill",
-  "tags": ["git", "pr", "workflow"],
+  "tags": [
+    "git",
+    "pr",
+    "workflow",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "runTestsFirst",
@@ -25,5 +30,14 @@
     "disableModelInvocation": true
   },
   "bodyTemplate": "# PR Workflow\n\n1. Review all changes with `git diff`\n{{#if parameters.runTestsFirst}}\n2. Run tests and lint before creating PR\n{{/if}}\n3. Create a descriptive branch name\n4. Write PR title and body with summary and test plan\n5. Push branch and create PR with `gh pr create`\n{{#if parameters.smallPrs}}\n- Keep PRs focused; split large changes into reviewable chunks\n{{/if}}\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/pr-workflow.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "pr-workflow.json",
+  "highlights": [
+    "pull requests",
+    "GitHub",
+    "workflow"
+  ],
+  "updatedAt": "2026-07-10"
 }

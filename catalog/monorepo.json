@@ -4,14 +4,23 @@
   "description": "Monorepo structure and workspace conventions",
   "category": "Architecture",
   "artifactType": "rule",
-  "tags": ["monorepo", "architecture"],
+  "tags": [
+    "monorepo",
+    "architecture",
+    "curse-book"
+  ],
   "parameters": [
     {
       "key": "packageManager",
       "label": "Package manager",
       "fieldType": "select",
       "default": "pnpm",
-      "options": ["pnpm", "npm", "yarn", "bun"]
+      "options": [
+        "pnpm",
+        "npm",
+        "yarn",
+        "bun"
+      ]
     },
     {
       "key": "sharedPackages",
@@ -25,5 +34,14 @@
     "alwaysApply": true
   },
   "bodyTemplate": "# Monorepo Conventions\n\n- Respect package boundaries; no cross-package deep imports\n- Place shared code in dedicated packages, not duplicated\n{{#if parameters.sharedPackages}}\n- Extract shared types, utils, and configs into `packages/` workspace\n{{/if}}\n- Run builds and tests from workspace root\n- Keep each package independently versionable\n",
-  "source": "awesome-cursorrules"
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/monorepo.json",
+  "sourceRepo": "asafelobotomy/curse-book",
+  "sourcePath": "monorepo.json",
+  "highlights": [
+    "monorepo",
+    "workspaces",
+    "Nx"
+  ],
+  "updatedAt": "2026-07-10"
 }

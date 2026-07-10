@@ -14,7 +14,12 @@ pub fn run(conn: &Connection) -> rusqlite::Result<()> {
             rule_frontmatter TEXT,
             skill_frontmatter TEXT,
             body_template TEXT NOT NULL,
-            source TEXT
+            source TEXT,
+            source_url TEXT,
+            source_repo TEXT,
+            source_path TEXT,
+            highlights TEXT NOT NULL DEFAULT '[]',
+            updated_at TEXT
         );
 
         CREATE TABLE IF NOT EXISTS presets (
@@ -53,5 +58,17 @@ pub fn run(conn: &Connection) -> rusqlite::Result<()> {
         );
         ",
     )?;
+
+    let version: i32 = conn.query_row("PRAGMA user_version", [], |row| row.get(0))?;
+
+    if version < 2 {
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN source_url TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN source_repo TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN source_path TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN highlights TEXT NOT NULL DEFAULT '[]'", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN updated_at TEXT", []);
+        conn.execute("PRAGMA user_version = 2", [])?;
+    }
+
     Ok(())
 }
