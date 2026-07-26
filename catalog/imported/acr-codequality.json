@@ -1,0 +1,33 @@
+{
+  "id": "acr-codequality",
+  "name": "Codequality",
+  "description": "Code Quality Guidelines",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "codequality"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Code Quality Guidelines",
+    "globs": "[\"**/*\"]",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# Code Quality Guidelines\n\n## Verify Information\nAlways verify information before presenting it. Do not make assumptions or speculate without clear evidence.\n\n## File-by-File Changes\nMake changes file by file and give me a chance to spot mistakes.\n\n## No Apologies\nNever use apologies.\n\n## No Understanding Feedback\nAvoid giving feedback about understanding in comments or documentation.\n\n## No Whitespace Suggestions\nDon't suggest whitespace changes.\n\n## No Summaries\nDon't summarize changes made.\n\n## No Inventions\nDon't invent changes other than what's explicitly requested.\n\n## No Unnecessary Confirmations\nDon't ask for confirmation of information already provided in the context.\n\n## Preserve Existing Code\nDon't remove unrelated code or functionalities. Pay attention to preserving existing structures.\n\n## Single Chunk Edits\nProvide all edits in a single chunk instead of multiple-step instructions or explanations for the same file.\n\n## No Implementation Checks\nDon't ask the user to verify implementations that are visible in the provided context.\n\n## No Unnecessary Updates\nDon't suggest updates or changes to files when there are no actual modifications needed.\n\n## Provide Real File Links\nAlways provide links to the real files, not x.md.\n\n## No Current Implementation\nDon't show or discuss the current implementation unless specifically requested.",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/codequality.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/codequality.mdc",
+  "highlights": [
+    "Code",
+    "Quality",
+    "Guidelines",
+    "Verify",
+    "Information",
+    "File"
+  ],
+  "updatedAt": "2026-05-13"
+}

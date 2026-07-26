@@ -44,9 +44,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Testing Standards\n\n- Target minimum {{parameters.coverageMin}}% code coverage for new code\n- Write tests alongside new features, not as afterthoughts\n- Use descriptive test names: `should [expected] when [condition]`\n- Prefer unit tests for logic, integration tests for APIs\n{{#if parameters.requireE2E}}\n- Add E2E tests for all user-facing features\n{{/if}}\n- Never test implementation details; test behavior\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/testing-standards.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "testing-standards.json",
   "highlights": [
     "testing",

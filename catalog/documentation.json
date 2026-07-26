@@ -28,9 +28,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Documentation Standards\n\n{{#if parameters.documentPublicApi}}\n- Document all public functions, classes, and APIs\n- Include parameter types, return types, and examples\n{{/if}}\n{{#if parameters.updateReadme}}\n- Update README when adding features or changing setup steps\n{{/if}}\n- Keep comments explaining *why*, not *what*\n- Remove outdated documentation when refactoring\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/documentation.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "documentation.json",
   "highlights": [
     "documentation",

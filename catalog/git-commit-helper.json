@@ -39,9 +39,9 @@
     "disableModelInvocation": true
   },
   "bodyTemplate": "# Git Commit Helper\n\nWhen the user asks for a commit message:\n\n1. Run `git status` and `git diff` (staged and unstaged)\n2. Analyze the changes\n3. Generate a commit message following these rules:\n\n{{#if parameters.useConventional}}\n- Use Conventional Commits: `type(scope): subject`\n- Types: feat, fix, docs, style, refactor, test, chore\n{{/if}}\n- Keep subject under {{parameters.maxSubjectLength}} characters\n{{#if parameters.includeBody}}\n- Add a body explaining the why, not just the what\n{{/if}}\n- Focus on the \"why\" rather than the \"what\"\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/git-commit-helper.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "git-commit-helper.json",
   "highlights": [
     "Git",

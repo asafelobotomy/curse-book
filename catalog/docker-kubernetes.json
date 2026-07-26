@@ -1,0 +1,39 @@
+{
+  "id": "docker-kubernetes",
+  "name": "Docker & Kubernetes",
+  "description": "Container images, Compose, and Kubernetes deployment conventions",
+  "category": "DevOps",
+  "artifactType": "rule",
+  "tags": ["docker", "kubernetes", "devops", "curse-book"],
+  "parameters": [
+    {
+      "key": "multiStage",
+      "label": "Multi-stage Docker builds",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "nonRootUser",
+      "label": "Run containers as non-root",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "helmCharts",
+      "label": "Helm chart conventions",
+      "fieldType": "toggle",
+      "default": false
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Docker and Kubernetes deployment standards",
+    "globs": "**/{Dockerfile,docker-compose*.yml,docker-compose*.yaml,*.yaml,*.yml}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Docker & Kubernetes\n\n{{#if parameters.multiStage}}\n- Use multi-stage builds: builder stage with toolchain, minimal runtime image\n- Pin base image digests in production Dockerfiles\n{{/if}}\n- Keep layers ordered for cache: deps before source, infrequent changes first\n{{#if parameters.nonRootUser}}\n- Create and run as a non-root user in the final image\n- Set `readOnlyRootFilesystem` and drop capabilities in K8s manifests where possible\n{{/if}}\n- Use health checks (`HEALTHCHECK` / liveness + readiness probes)\n- Never bake secrets into images; use env, secrets mounts, or external secret stores\n{{#if parameters.helmCharts}}\n- Helm: values.yaml for environment overrides; templates stay generic\n- Document required values and provide sensible defaults in values.schema.json when applicable\n{{/if}}\n- Resource requests/limits on every workload; use HPA for stateless services\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/docker-*.mdc",
+  "highlights": ["Docker", "Kubernetes", "containers", "Helm"],
+  "updatedAt": "2026-07-10"
+}

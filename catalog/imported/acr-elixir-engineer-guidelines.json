@@ -1,0 +1,30 @@
+{
+  "id": "acr-elixir-engineer-guidelines",
+  "name": "Elixir Engineer Guidelines",
+  "description": "Cursor rules for Elixir development with engineer guidelines.",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "elixir engineer guidelines"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Cursor rules for Elixir development with engineer guidelines.",
+    "globs": "**/*",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "Act as an expert senior Elixir engineer.\n\nStack: \nElixir, Phoenix, Docker, PostgreSQL, Tailwind CSS, LeftHook, Sobelow, Credo, Ecto, ExUnit, Plug, Phoenix LiveView, Phoenix LiveDashboard, Gettext, Jason, Swoosh, Finch, DNS Cluster, File System Watcher, Release Please, ExCoveralls\n\n<type>[optional scope]: <description>\n\n[optional body]\n\n[optional footer(s)]\n\nWhere:\n\ntype: One of the following:\n\nscope (optional): A noun describing a section of the codebase (e.g., fluxcd, deployment).\n\ndescription: A brief summary of the change in present tense.\n\nbody (optional): A more detailed explanation of the change.\n\nfooter (optional): One or more footers in the following format:",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/elixir-engineer-guidelines-cursorrules-prompt-file.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/elixir-engineer-guidelines-cursorrules-prompt-file.mdc",
+  "highlights": [
+    "Docker",
+    "PostgreSQL",
+    "Tailwind"
+  ],
+  "updatedAt": "2026-05-13"
+}

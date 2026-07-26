@@ -3,15 +3,31 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 import { CatalogCard } from "../components/catalog/CatalogCard";
-import { CatalogDetailDrawer } from "../components/catalog/CatalogDetailDrawer";
-import { CatalogFilterBar } from "../components/catalog/CatalogFilterBar";
-import { api } from "../lib/api";
+import { CatalogDetailPanel } from "../components/catalog/CatalogDetailPanel";
 import {
-  collectUniqueTags,
-  sortTemplates,
-  type SortOption,
-} from "../lib/catalog";
-import type { TemplateDefinition } from "../lib/types";
+  CatalogFilterBar,
+  type CatalogLayout,
+} from "../components/catalog/CatalogFilterBar";
+import { CatalogListRow } from "../components/catalog/CatalogListRow";
+import { AddToLibrarySheet } from "../components/library/AddToLibrarySheet";
+import { DeploySheet } from "../components/library/DeploySheet";
+import { buildDefaultParameters, sortTemplates, type SortOption } from "../lib/catalog";
+import {
+  buildSourceFilterOptions,
+  matchesCatalogSourceFilter,
+  resolveCatalogSourceEntry,
+} from "../lib/catalogSources";
+import { CatalogRegistrySourceProvider } from "../lib/CatalogRegistrySourceContext";
+import { organizeCatalogTags, registrySourceIds } from "../lib/tags";
+import { api } from "../lib/api";
+import type { CatalogArtifactFilter, CatalogSourceEntry, CatalogSourceFilter, Preset, TemplateDefinition } from "../lib/types";
+
+const LAYOUT_STORAGE_KEY = "catalog-layout";
+
+function loadLayout(): CatalogLayout {
+  const stored = localStorage.getItem(LAYOUT_STORAGE_KEY);
+  return stored === "list" ? "list" : "card";
+}
 
 export function CatalogPage() {
   const navigate = useNavigate();
@@ -19,11 +35,16 @@ export function CatalogPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [activeTags, setActiveTags] = useState<Set<string>>(new Set());
-  const [artifactFilter, setArtifactFilter] = useState<"all" | "rule" | "skill">("all");
+  const [artifactFilter, setArtifactFilter] = useState<CatalogArtifactFilter>("all");
+  const [sourceFilter, setSourceFilter] = useState<CatalogSourceFilter>("all");
   const [sort, setSort] = useState<SortOption>("name-asc");
+  const [layout, setLayout] = useState<CatalogLayout>(loadLayout);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateDefinition | null>(null);
+  const [addedPreset, setAddedPreset] = useState<Preset | null>(null);
+  const [deployPreset, setDeployPreset] = useState<Preset | null>(null);
   const [tokenStats, setTokenStats] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [catalogSources, setCatalogSources] = useState<CatalogSourceEntry[]>([]);
 
   useEffect(() => {
     api
@@ -32,6 +53,9 @@ export function CatalogPage() {
       .then(setTemplates)
       .catch((e) => toast.error(String(e)))
       .finally(() => setLoading(false));
+    api.listCatalogSources().then(setCatalogSources).catch((e) => {
+      console.warn("Failed to load catalog sources", e);
+    });
   }, []);
 
   useEffect(() => {
@@ -47,12 +71,34 @@ export function CatalogPage() {
       .catch(() => {});
   }, [templates]);
 
+  useEffect(() => {
+    if (!selectedTemplate) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedTemplate(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedTemplate]);
+
   const categories = useMemo(() => {
     const cats = new Set(templates.map((t) => t.category));
     return ["all", ...Array.from(cats).sort()];
   }, [templates]);
 
-  const allTags = useMemo(() => collectUniqueTags(templates), [templates]);
+  const registryIds = useMemo(
+    () => registrySourceIds(catalogSources.map((s) => s.id)),
+    [catalogSources],
+  );
+
+  const organizedTags = useMemo(
+    () => organizeCatalogTags(templates, activeTags, registryIds),
+    [templates, activeTags, registryIds],
+  );
+
+  const sourceOptions = useMemo(
+    () => buildSourceFilterOptions(catalogSources),
+    [catalogSources],
+  );
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -66,13 +112,14 @@ export function CatalogPage() {
       const matchesCategory = category === "all" || t.category === category;
       const matchesArtifact =
         artifactFilter === "all" || t.artifactType === artifactFilter;
+      const matchesSource = matchesCatalogSourceFilter(t, sourceFilter);
       const matchesTags =
         activeTags.size === 0 ||
         Array.from(activeTags).every((tag) => t.tags.includes(tag));
-      return matchesSearch && matchesCategory && matchesArtifact && matchesTags;
+      return matchesSearch && matchesCategory && matchesArtifact && matchesSource && matchesTags;
     });
     return sortTemplates(base, sort, tokenStats);
-  }, [templates, search, category, artifactFilter, activeTags, sort, tokenStats]);
+  }, [templates, search, category, artifactFilter, sourceFilter, activeTags, sort, tokenStats]);
 
   const toggleTag = useCallback((tag: string) => {
     setActiveTags((prev) => {
@@ -83,24 +130,59 @@ export function CatalogPage() {
     });
   }, []);
 
-  const addToLibrary = async (template: TemplateDefinition) => {
+  const handleLayoutChange = (next: CatalogLayout) => {
+    setLayout(next);
+    localStorage.setItem(LAYOUT_STORAGE_KEY, next);
+  };
+
+  const openDetails = (template: TemplateDefinition) => {
+    setSelectedTemplate(template);
+  };
+
+  const addToLibrary = async (
+    template: TemplateDefinition,
+    parameters?: Record<string, unknown>,
+  ) => {
     try {
-      const preset = await api.createPresetFromTemplate(template.id);
-      toast.success(`Added "${preset.name}" to your presets`);
-      navigate(`/presets/${preset.id}`);
+      const params = parameters ?? buildDefaultParameters(template.parameters);
+      const preset = await api.createPresetFromTemplate(
+        template.id,
+        undefined,
+        params,
+      );
+      toast.success(`Added "${preset.name}" to your library`);
+      setAddedPreset(preset);
+      setSelectedTemplate(null);
     } catch (e) {
       toast.error(String(e));
     }
   };
 
-  const drawerOpen = selectedTemplate !== null;
+  const handleAssign = async () => {
+    if (!addedPreset) return;
+    const projects = await api.listProjects();
+    if (projects.length === 0) {
+      toast.info("Scan for projects first on the Projects page");
+      navigate("/projects");
+      return;
+    }
+    try {
+      await api.assignPresetToProject(projects[0].id, addedPreset.id);
+      toast.success(`Assigned to ${projects[0].name}`);
+      setAddedPreset(null);
+      navigate("/projects");
+    } catch (e) {
+      toast.error(String(e));
+    }
+  };
 
   return (
-    <div className={`p-6 max-w-7xl transition-all ${drawerOpen ? "pr-[50%]" : ""}`}>
+    <CatalogRegistrySourceProvider sourceIds={registryIds}>
+    <div className="p-6 max-w-7xl mx-auto">
       <header className="mb-6">
         <h2 className="text-2xl font-bold">Template Catalog</h2>
         <p className="text-[var(--color-text-muted)] mt-1">
-          Pick from curated rules and skills inspired by awesome-cursorrules
+          Pick from curated rules, skills, hooks, MCP configs, and plugins
         </p>
       </header>
 
@@ -132,50 +214,103 @@ export function CatalogPage() {
       </div>
 
       <CatalogFilterBar
-        tags={allTags}
+        organizedTags={organizedTags}
         activeTags={activeTags}
         artifactFilter={artifactFilter}
+        sourceFilter={sourceFilter}
+        sourceOptions={sourceOptions}
         sort={sort}
+        layout={layout}
         onTagClick={toggleTag}
         onArtifactFilterChange={setArtifactFilter}
+        onSourceFilterChange={setSourceFilter}
         onSortChange={setSort}
+        onLayoutChange={handleLayoutChange}
         onClearTags={() => setActiveTags(new Set())}
       />
 
       {loading ? (
         <p className="text-[var(--color-text-muted)]">Loading catalog...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-[var(--color-text-muted)]">No templates match your filters.</p>
-      ) : (
-        <div
-          className={`grid gap-4 ${
-            drawerOpen
-              ? "grid-cols-1 lg:grid-cols-2"
-              : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-          }`}
-        >
+        <p className="text-[var(--color-text-muted)]">
+          No templates match your filters.
+        </p>
+      ) : layout === "card" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map((template) => (
             <CatalogCard
               key={template.id}
               template={template}
               activeTags={activeTags}
+              selected={selectedTemplate?.id === template.id}
               tokenEstimate={tokenStats[template.id]}
-              onSelect={setSelectedTemplate}
+              onSelect={openDetails}
               onTagClick={toggleTag}
-              onAddToLibrary={addToLibrary}
+              onAddToLibrary={(t) =>
+                addToLibrary(t, buildDefaultParameters(t.parameters))
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((template) => (
+            <CatalogListRow
+              key={template.id}
+              template={template}
+              selected={selectedTemplate?.id === template.id}
+              tokenEstimate={tokenStats[template.id]}
+              onSelect={openDetails}
+              onAddToLibrary={(t) =>
+                addToLibrary(t, buildDefaultParameters(t.parameters))
+              }
             />
           ))}
         </div>
       )}
 
-      <CatalogDetailDrawer
-        template={selectedTemplate}
-        searchQuery={search}
-        activeTags={activeTags}
-        onClose={() => setSelectedTemplate(null)}
-        onTagClick={toggleTag}
-        onAddToLibrary={addToLibrary}
-      />
+      {selectedTemplate && (
+        <CatalogDetailPanel
+          template={selectedTemplate}
+          sourceEntry={resolveCatalogSourceEntry(selectedTemplate, catalogSources)}
+          activeTags={activeTags}
+          onClose={() => setSelectedTemplate(null)}
+          onTagClick={toggleTag}
+          onAddToLibrary={addToLibrary}
+        />
+      )}
+
+      {addedPreset && (
+        <AddToLibrarySheet
+          preset={addedPreset}
+          onClose={() => setAddedPreset(null)}
+          onDeployProject={() => setDeployPreset(addedPreset)}
+          onDeployGlobal={
+            addedPreset.artifactType === "skill"
+              ? async () => {
+                  try {
+                    await api.deployPresetToUser(addedPreset.id);
+                    toast.success("Deployed to cursebook");
+                    setAddedPreset(null);
+                  } catch (e) {
+                    toast.error(String(e));
+                  }
+                }
+              : undefined
+          }
+          onAssign={handleAssign}
+          onAddAnother={() => setAddedPreset(null)}
+        />
+      )}
+
+      {deployPreset && (
+        <DeploySheet
+          preset={deployPreset}
+          onClose={() => setDeployPreset(null)}
+          onDeployed={() => setAddedPreset(null)}
+        />
+      )}
     </div>
+    </CatalogRegistrySourceProvider>
   );
 }

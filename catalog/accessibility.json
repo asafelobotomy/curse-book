@@ -35,9 +35,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Accessibility Standards\n\n- Target WCAG {{parameters.wcagLevel}} compliance\n- Use semantic HTML elements (`button`, `nav`, `main`, etc.)\n- Add `alt` text to all meaningful images\n- Ensure sufficient color contrast (4.5:1 for text)\n{{#if parameters.keyboardNav}}\n- All interactive elements must be keyboard accessible\n- Visible focus indicators on all focusable elements\n{{/if}}\n- Use ARIA attributes only when semantic HTML is insufficient\n- Test with screen reader patterns in mind\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/accessibility.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "accessibility.json",
   "highlights": [
     "accessibility",

@@ -1,0 +1,33 @@
+{
+  "id": "acr-database",
+  "name": "Database",
+  "description": "Database best practices focusing on Prisma and Supabase integration",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "database"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Database best practices focusing on Prisma and Supabase integration",
+    "globs": "prisma/**/*, src/db/**/*, **/*.prisma, supabase/**/*",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# Database Best Practices\n\n## Prisma Setup\n- Use proper schema design\n- Implement proper migrations\n- Use proper relation definitions\n- Configure proper connection\n- Implement proper seeding\n- Use proper client setup\n\n## Prisma Models\n- Use proper model naming\n- Implement proper relations\n- Use proper field types\n- Define proper indexes\n- Implement proper constraints\n- Use proper enums\n\n## Prisma Queries\n- Use proper query optimization\n- Implement proper filtering\n- Use proper relations loading\n- Handle transactions properly\n- Implement proper pagination\n- Use proper aggregations\n\n## Supabase Setup\n- Configure proper project setup\n- Implement proper authentication\n- Use proper database setup\n- Configure proper storage\n- Implement proper policies\n- Use proper client setup\n\n## Supabase Security\n- Implement proper RLS policies\n- Use proper authentication\n- Configure proper permissions\n- Handle sensitive data properly\n- Implement proper backups\n- Use proper encryption\n\n## Supabase Queries\n- Use proper query optimization\n- Implement proper filtering\n- Use proper joins\n- Handle real-time properly\n- Implement proper pagination\n- Use proper functions\n\n## Database Design\n- Use proper normalization\n- Implement proper indexing\n- Use proper constraints\n- Define proper relations\n- Implement proper cascades\n- Use proper data types\n\n## Performance\n- Use proper connection pooling\n- Implement proper caching\n- Use proper query optimization\n- Handle N+1 queries properly\n- Implement proper batching\n- Monitor performance metrics\n\n## Security\n- Use proper authentication\n- Implement proper authorization\n- Handle sensitive data properly\n- Use proper encryption\n- Implement proper backups\n- Monitor security issues\n\n## Best Practices\n- Follow database conventions\n- Use proper migrations\n- Implement proper versioning\n- Handle errors properly\n- Document schema properly\n- Monitor database health",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/database.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/database.mdc",
+  "highlights": [
+    "Database",
+    "Best",
+    "Practices",
+    "Prisma",
+    "Setup",
+    "Implement"
+  ],
+  "updatedAt": "2026-05-13"
+}

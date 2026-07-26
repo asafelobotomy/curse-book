@@ -1,0 +1,81 @@
+{
+  "id": "imported-plugin-continual-learning",
+  "artifactType": "plugin",
+  "name": "continual-learning",
+  "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.",
+  "category": "Imported",
+  "tags": [
+    "plugin",
+    "cursor/plugins",
+    "imported"
+  ],
+  "parameters": [],
+  "pluginBundle": {
+    "manifest": {
+      "name": "continual-learning",
+      "displayName": "Continual Learning",
+      "version": "1.0.0",
+      "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.",
+      "author": {
+        "name": "Cursor",
+        "email": "plugins@cursor.com"
+      },
+      "homepage": "https://github.com/cursor/plugins",
+      "repository": "https://github.com/cursor/plugins",
+      "license": "MIT",
+      "logo": "assets/avatar.png",
+      "keywords": [
+        "continual-learning",
+        "agent-memory",
+        "transcripts",
+        "hooks",
+        "incremental"
+      ],
+      "category": "developer-tools",
+      "tags": [
+        "automation",
+        "memory",
+        "transcripts"
+      ],
+      "agents": "./agents/",
+      "skills": "./skills/",
+      "hooks": "./hooks/hooks.json"
+    },
+    "files": [
+      {
+        "path": ".cursor-plugin/plugin.json",
+        "content": "{\n  \"name\": \"continual-learning\",\n  \"displayName\": \"Continual Learning\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.\",\n  \"author\": {\n    \"name\": \"Cursor\",\n    \"email\": \"plugins@cursor.com\"\n  },\n  \"homepage\": \"https://github.com/cursor/plugins\",\n  \"repository\": \"https://github.com/cursor/plugins\",\n  \"license\": \"MIT\",\n  \"logo\": \"assets/avatar.png\",\n  \"keywords\": [\n    \"continual-learning\",\n    \"agent-memory\",\n    \"transcripts\",\n    \"hooks\",\n    \"incremental\"\n  ],\n  \"category\": \"developer-tools\",\n  \"tags\": [\n    \"automation\",\n    \"memory\",\n    \"transcripts\"\n  ],\n  \"agents\": \"./agents/\",\n  \"skills\": \"./skills/\",\n  \"hooks\": \"./hooks/hooks.json\"\n}\n"
+      },
+      {
+        "path": "README.md",
+        "content": "# Continual Learning\n\nAutomatically and incrementally keeps `AGENTS.md` up to date from transcript changes.\n\nThe plugin combines:\n\n- A `stop` hook that decides when to trigger learning.\n- A `continual-learning` skill that orchestrates the learning flow.\n- An `agents-memory-updater` subagent that mines new or changed transcripts and updates `AGENTS.md`.\n\nIt is designed to avoid noisy rewrites by:\n\n- Reading existing `AGENTS.md` first and updating matching bullets in place.\n- Processing only new or changed transcript files.\n- Writing plain bullet points only (no evidence/confidence metadata).\n\n## Installation\n\n```bash\n/add-plugin continual-learning\n```\n\n## How it works\n\nOn eligible `stop` events, the hook may emit a `followup_message` that asks the agent to run the `continual-learning` skill.\n\nThe skill is marked `disable-model-invocation: true`, so it will not be auto-selected during normal model invocation. When it does run, it delegates the full memory update flow to `agents-memory-updater`.\n\nThe hook keeps local runtime state in:\n\n- `.cursor/hooks/state/continual-learning.json` (cadence state)\n\nThe updater uses an incremental transcript index at:\n\n- `.cursor/hooks/state/continual-learning-index.json`\n\n## Trigger cadence\n\nDefault cadence:\n\n- minimum 10 completed turns\n- minimum 120 minutes since the last run\n- transcript mtime must advance since the previous run\n\nTrial mode defaults (enabled in this plugin hook config):\n\n- minimum 3 completed turns\n- minimum 15 minutes\n- automatically expires after 24 hours, then falls back to default cadence\n\n## Optional env overrides\n\n- `CONTINUAL_LEARNING_MIN_TURNS` (or legacy `CONTINUOUS_LEARNING_MIN_TURNS`)\n- `CONTINUAL_LEARNING_MIN_MINUTES` (or legacy `CONTINUOUS_LEARNING_MIN_MINUTES`)\n- `CONTINUAL_LEARNING_TRIAL_MODE` (or legacy `CONTINUOUS_LEARNING_TRIAL_MODE`)\n- `CONTINUAL_LEARNING_TRIAL_MIN_TURNS` (or legacy `CONTINUOUS_LEARNING_TRIAL_MIN_TURNS`)\n- `CONTINUAL_LEARNING_TRIAL_MIN_MINUTES` (or legacy `CONTINUOUS_LEARNING_TRIAL_MIN_MINUTES`)\n- `CONTINUAL_LEARNING_TRIAL_DURATION_MINUTES` (or legacy `CONTINUOUS_LEARNING_TRIAL_DURATION_MINUTES`)\n\n## Output format in AGENTS.md\n\nThe memory updater writes only:\n\n- `## Learned User Preferences`\n- `## Learned Workspace Facts`\n\nEach item is a plain bullet point.\n\n## License\n\nMIT\n"
+      },
+      {
+        "path": "agents/agents-memory-updater.md",
+        "content": "---\nname: agents-memory-updater\ndescription: Mine high-signal transcript deltas, update `AGENTS.md`, and keep the incremental transcript index in sync.\nmodel: inherit\n---\n\n# AGENTS.md memory updater\n\nOwn the full memory update flow for continual learning.\n\n## Trigger\n\nUse from `continual-learning` when transcript deltas may produce durable memory updates.\n\n## Workflow\n\n1. Read existing `AGENTS.md` first. If it does not exist, create it with only:\n   - `## Learned User Preferences`\n   - `## Learned Workspace Facts`\n2. Load the incremental index if present.\n3. Inspect only transcript files under `~/.cursor/projects/<workspace-slug>/agent-transcripts/` that are new or have newer mtimes than the index.\n4. Pull out only durable, reusable items:\n   - recurring user preferences or corrections\n   - stable workspace facts\n5. Update `AGENTS.md` carefully:\n   - update matching bullets in place\n   - add only net-new bullets\n   - deduplicate semantically similar bullets\n   - keep each learned section to at most 12 bullets\n6. Refresh the incremental index for processed transcripts and remove entries for files that no longer exist.\n7. If the merge produces no `AGENTS.md` changes, leave `AGENTS.md` unchanged but still refresh the index.\n8. If no meaningful updates exist, respond exactly: `No high-signal memory updates.`\n\n## Guardrails\n\n- Use plain bullet points only.\n- Keep only these sections:\n  - `## Learned User Preferences`\n  - `## Learned Workspace Facts`\n- Do not write evidence/confidence tags.\n- Do not write process instructions, rationale, or metadata blocks.\n- Exclude secrets, private data, one-off instructions, and transient details.\n\n## Output\n\n- Updated `AGENTS.md` and `.cursor/hooks/state/continual-learning-index.json` when needed\n- Otherwise exactly `No high-signal memory updates.`\n"
+      },
+      {
+        "path": "hooks/continual-learning-stop.ts",
+        "content": "/// <reference types=\"bun-types-no-globals/lib/index.d.ts\" />\n\nimport { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from \"node:fs\";\nimport { dirname, resolve } from \"node:path\";\nimport { stdin } from \"bun\";\n\nconst STATE_PATH = resolve(\".cursor/hooks/state/continual-learning.json\");\nconst INCREMENTAL_INDEX_PATH = resolve(\n  \".cursor/hooks/state/continual-learning-index.json\"\n);\nconst DEFAULT_MIN_TURNS = 10;\nconst DEFAULT_MIN_MINUTES = 120;\nconst TRIAL_DEFAULT_MIN_TURNS = 3;\nconst TRIAL_DEFAULT_MIN_MINUTES = 15;\nconst TRIAL_DEFAULT_DURATION_MINUTES = 24 * 60;\n\nconst FOLLOWUP_MESSAGE =\n  `Run the \\`continual-learning\\` skill now. Use the \\`agents-memory-updater\\` subagent for the full memory update flow. Use incremental transcript processing with index file \\`${INCREMENTAL_INDEX_PATH}\\`: only consider transcripts not in the index or transcripts whose mtime is newer than indexed mtime. Have the subagent refresh index mtimes, remove entries for deleted transcripts, and update \\`AGENTS.md\\` only for high-signal recurring user corrections and durable workspace facts. Exclude one-off/transient details and secrets. If no meaningful updates exist, respond exactly: No high-signal memory updates.`;\n\ninterface StopHookInput {\n  conversation_id: string;\n  generation_id?: string;\n  status: \"completed\" | \"aborted\" | \"error\" | string;\n  loop_count: number;\n  transcript_path?: string | null;\n}\n\ninterface ContinuousLearningState {\n  version: 1;\n  lastRunAtMs: number;\n  turnsSinceLastRun: number;\n  lastTranscriptMtimeMs: number | null;\n  lastProcessedGenerationId: string | null;\n  trialStartedAtMs: number | null;\n}\n\nfunction parsePositiveInt(value: string | undefined, fallback: number): number {\n  if (!value) {\n    return fallback;\n  }\n  const parsed = Number.parseInt(value, 10);\n  if (!Number.isFinite(parsed) || parsed <= 0) {\n    return fallback;\n  }\n  return parsed;\n}\n\nfunction parseBoolean(value: string | undefined): boolean {\n  if (!value) {\n    return false;\n  }\n  const normalized = value.trim().toLowerCase();\n  return (\n    normalized === \"1\" ||\n    normalized === \"true\" ||\n    normalized === \"yes\" ||\n    normalized === \"on\"\n  );\n}\n\nfunction readEnvValue(primary: string, legacy: string): string | undefined {\n  return process.env[primary] ?? process.env[legacy];\n}\n\nfunction loadState(): ContinuousLearningState {\n  const fallback: ContinuousLearningState = {\n    version: 1,\n    lastRunAtMs: 0,\n    turnsSinceLastRun: 0,\n    lastTranscriptMtimeMs: null,\n    lastProcessedGenerationId: null,\n    trialStartedAtMs: null,\n  };\n\n  if (!existsSync(STATE_PATH)) {\n    return fallback;\n  }\n\n  try {\n    const raw = readFileSync(STATE_PATH, \"utf-8\");\n    const parsed = JSON.parse(raw) as Partial<ContinuousLearningState>;\n    if (parsed.version !== 1) {\n      return fallback;\n    }\n    return {\n      version: 1,\n      lastRunAtMs:\n        typeof parsed.lastRunAtMs === \"number\" && Number.isFinite(parsed.lastRunAtMs)\n          ? parsed.lastRunAtMs\n          : 0,\n      turnsSinceLastRun:\n        typeof parsed.turnsSinceLastRun === \"number\" &&\n        Number.isFinite(parsed.turnsSinceLastRun) &&\n        parsed.turnsSinceLastRun >= 0\n          ? parsed.turnsSinceLastRun\n          : 0,\n      lastTranscriptMtimeMs:\n        typeof parsed.lastTranscriptMtimeMs === \"number\" &&\n        Number.isFinite(parsed.lastTranscriptMtimeMs)\n          ? parsed.lastTranscriptMtimeMs\n          : null,\n      lastProcessedGenerationId:\n        typeof parsed.lastProcessedGenerationId === \"string\"\n          ? parsed.lastProcessedGenerationId\n          : null,\n      trialStartedAtMs:\n        typeof parsed.trialStartedAtMs === \"number\" &&\n        Number.isFinite(parsed.trialStartedAtMs)\n          ? parsed.trialStartedAtMs\n          : null,\n    };\n  } catch {\n    return fallback;\n  }\n}\n\nfunction saveState(state: ContinuousLearningState): void {\n  const directory = dirname(STATE_PATH);\n  if (!existsSync(directory)) {\n    mkdirSync(directory, { recursive: true });\n  }\n  writeFileSync(STATE_PATH, `${JSON.stringify(state, null, 2)}\\n`, \"utf-8\");\n}\n\nfunction getTranscriptMtimeMs(transcriptPath: string | null | undefined): number | null {\n  if (!transcriptPath) {\n    return null;\n  }\n\n  try {\n    return statSync(transcriptPath).mtimeMs;\n  } catch {\n    return null;\n  }\n}\n\nfunction shouldCountTurn(input: StopHookInput): boolean {\n  return input.status === \"completed\" && input.loop_count === 0;\n}\n\nasync function parseHookInput<T>(): Promise<T> {\n  const text = await stdin.text();\n  return JSON.parse(text) as T;\n}\n\nasync function main(): Promise<number> {\n  try {\n    const input = await parseHookInput<StopHookInput>();\n    const state = loadState();\n\n    if (input.generation_id && input.generation_id === state.lastProcessedGenerationId) {\n      console.log(JSON.stringify({}));\n      return 0;\n    }\n    state.lastProcessedGenerationId = input.generation_id ?? null;\n\n    const countedTurn = shouldCountTurn(input);\n    const turnIncrement = countedTurn ? 1 : 0;\n    const turnsSinceLastRun = state.turnsSinceLastRun + turnIncrement;\n    const now = Date.now();\n\n    const trialEnabled = parseBoolean(\n      readEnvValue(\"CONTINUAL_LEARNING_TRIAL_MODE\", \"CONTINUOUS_LEARNING_TRIAL_MODE\")\n    );\n    if (trialEnabled && countedTurn && state.trialStartedAtMs === null) {\n      state.trialStartedAtMs = now;\n    }\n\n    const trialDurationMinutes = parsePositiveInt(\n      readEnvValue(\n        \"CONTINUAL_LEARNING_TRIAL_DURATION_MINUTES\",\n        \"CONTINUOUS_LEARNING_TRIAL_DURATION_MINUTES\"\n      ),\n      TRIAL_DEFAULT_DURATION_MINUTES\n    );\n    const trialMinTurns = parsePositiveInt(\n      readEnvValue(\n        \"CONTINUAL_LEARNING_TRIAL_MIN_TURNS\",\n        \"CONTINUOUS_LEARNING_TRIAL_MIN_TURNS\"\n      ),\n      TRIAL_DEFAULT_MIN_TURNS\n    );\n    const trialMinMinutes = parsePositiveInt(\n      readEnvValue(\n        \"CONTINUAL_LEARNING_TRIAL_MIN_MINUTES\",\n        \"CONTINUOUS_LEARNING_TRIAL_MIN_MINUTES\"\n      ),\n      TRIAL_DEFAULT_MIN_MINUTES\n    );\n    const inTrialWindow =\n      trialEnabled &&\n      state.trialStartedAtMs !== null &&\n      now - state.trialStartedAtMs < trialDurationMinutes * 60_000;\n\n    const minTurns = parsePositiveInt(\n      readEnvValue(\"CONTINUAL_LEARNING_MIN_TURNS\", \"CONTINUOUS_LEARNING_MIN_TURNS\"),\n      DEFAULT_MIN_TURNS\n    );\n    const minMinutes = parsePositiveInt(\n      readEnvValue(\"CONTINUAL_LEARNING_MIN_MINUTES\", \"CONTINUOUS_LEARNING_MIN_MINUTES\"),\n      DEFAULT_MIN_MINUTES\n    );\n\n    const effectiveMinTurns = inTrialWindow ? trialMinTurns : minTurns;\n    const effectiveMinMinutes = inTrialWindow ? trialMinMinutes : minMinutes;\n    const minutesSinceLastRun =\n      state.lastRunAtMs > 0\n        ? Math.floor((now - state.lastRunAtMs) / 60000)\n        : Number.POSITIVE_INFINITY;\n    const transcriptMtimeMs = getTranscriptMtimeMs(input.transcript_path);\n    const hasTranscriptAdvanced =\n      transcriptMtimeMs !== null &&\n      (state.lastTranscriptMtimeMs === null || transcriptMtimeMs > state.lastTranscriptMtimeMs);\n\n    const shouldTrigger =\n      countedTurn &&\n      turnsSinceLastRun >= effectiveMinTurns &&\n      minutesSinceLastRun >= effectiveMinMinutes &&\n      hasTranscriptAdvanced;\n\n    if (shouldTrigger) {\n      state.lastRunAtMs = now;\n      state.turnsSinceLastRun = 0;\n      state.lastTranscriptMtimeMs = transcriptMtimeMs;\n      saveState(state);\n\n      console.log(\n        JSON.stringify({\n          followup_message: FOLLOWUP_MESSAGE,\n        })\n      );\n      return 0;\n    }\n\n    state.turnsSinceLastRun = turnsSinceLastRun;\n    saveState(state);\n    console.log(JSON.stringify({}));\n    return 0;\n  } catch (error) {\n    console.error(\"[continual-learning-stop] failed\", error);\n    console.log(JSON.stringify({}));\n    return 0;\n  }\n}\n\nconst exitCode = await main();\nprocess.exit(exitCode);\n"
+      },
+      {
+        "path": "hooks/hooks.json",
+        "content": "{\n  \"version\": 1,\n  \"hooks\": {\n    \"stop\": [\n      {\n        \"command\": \"bun run ${CURSOR_PLUGIN_ROOT}/hooks/continual-learning-stop.ts\"\n      }\n    ]\n  }\n}\n"
+      },
+      {
+        "path": "skills/continual-learning/SKILL.md",
+        "content": "---\nname: continual-learning\ndescription: Orchestrate continual learning by delegating transcript mining and AGENTS.md updates to `agents-memory-updater`.\ndisable-model-invocation: true\n---\n\n# Continual Learning\n\nKeep `AGENTS.md` current by delegating the memory update flow to one subagent.\n\n## Trigger\n\nUse when the user asks to mine prior chats, maintain `AGENTS.md`, or run the continual-learning loop.\n\n## Workflow\n\n1. Call `agents-memory-updater`.\n2. Return the updater result.\n\n## Guardrails\n\n- Keep the parent skill orchestration-only.\n- Do not mine transcripts or edit files in the parent flow.\n- Do not bypass the subagent.\n"
+      }
+    ]
+  },
+  "bodyTemplate": "",
+  "source": "cursor/plugins",
+  "sourceUrl": "https://github.com/cursor/plugins/tree/main/continual-learning",
+  "sourceRepo": "cursor/plugins",
+  "sourcePath": "continual-learning",
+  "highlights": [
+    "continual-learning",
+    "official plugin"
+  ],
+  "updatedAt": "2026-07-10"
+}

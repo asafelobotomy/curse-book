@@ -119,6 +119,25 @@ export function buildTermDecorations(
   return decorations;
 }
 
+const PARAM_DIFF_STYLE: editor.IModelDecorationOptions = {
+  className: "monaco-highlight-param",
+  inlineClassName: "monaco-highlight-param-inline",
+  isWholeLine: true,
+};
+
+export function buildLineDecorations(
+  lineNumbers: number[],
+): HighlightDecoration[] {
+  return lineNumbers.map((lineNumber) => ({
+    range: {
+      startLineNumber: lineNumber,
+      startColumn: 1,
+      endLineNumber: lineNumber,
+      endColumn: 1,
+    },
+    options: PARAM_DIFF_STYLE,
+  }));
+}
 export function mergeDecorations(
   ...groups: HighlightDecoration[][]
 ): HighlightDecoration[] {

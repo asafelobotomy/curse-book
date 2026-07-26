@@ -1,0 +1,17 @@
+{
+  "id": "mcp-postgres",
+  "name": "PostgreSQL",
+  "description": "PostgreSQL MCP server — requires POSTGRES_URL connection string",
+  "category": "MCP",
+  "artifactType": "mcp",
+  "tags": ["mcp", "database", "postgres", "curse-book"],
+  "parameters": [],
+  "mcpFrontmatter": {
+    "serverKey": "postgres",
+    "configTemplate": "{\n  \"command\": \"npx\",\n  \"args\": [\"-y\", \"@modelcontextprotocol/server-postgres\", \"${env:POSTGRES_URL}\"]\n}"
+  },
+  "bodyTemplate": "",
+  "source": "curse-book",
+  "highlights": ["PostgreSQL", "SQL", "database"],
+  "updatedAt": "2026-07-10"
+}

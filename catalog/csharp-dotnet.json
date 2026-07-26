@@ -1,0 +1,39 @@
+{
+  "id": "csharp-dotnet",
+  "name": "C# .NET Standards",
+  "description": "Modern C# and ASP.NET Core API conventions",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["csharp", "dotnet", "aspnet", "backend", "curse-book"],
+  "parameters": [
+    {
+      "key": "minimalApis",
+      "label": "Minimal APIs (vs controllers)",
+      "fieldType": "toggle",
+      "default": false
+    },
+    {
+      "key": "nullableReferenceTypes",
+      "label": "Nullable reference types",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "asyncAllTheWay",
+      "label": "Async all the way",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "C# and ASP.NET Core coding standards",
+    "globs": "**/*.{cs,csproj}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# C# .NET Standards\n\n- Follow .NET naming: PascalCase for public members, `_camelCase` for private fields\n{{#if parameters.nullableReferenceTypes}}\n- Enable nullable reference types; annotate APIs with `?` and guard nulls at boundaries\n{{/if}}\n{{#if parameters.minimalApis}}\n- Group minimal API endpoints by feature; use endpoint filters for cross-cutting concerns\n{{else}}\n- Use controller-based APIs with thin controllers; business logic in application services\n{{/if}}\n{{#if parameters.asyncAllTheWay}}\n- Use `async`/`await` end-to-end; suffix async methods with `Async`\n- Avoid `.Result` and `.Wait()` on tasks\n{{/if}}\n- Use `IOptions<T>` for configuration; validate options at startup\n- Unit test with xUnit; integration tests with `WebApplicationFactory`\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/aspnet-*.mdc",
+  "highlights": ["C#", ".NET", "ASP.NET Core", "async"],
+  "updatedAt": "2026-07-10"
+}

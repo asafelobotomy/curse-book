@@ -1,0 +1,24 @@
+{
+  "id": "plugin-team-review-kit",
+  "name": "Team Review Kit",
+  "description": "Composite plugin: TypeScript rule, code review skill, and code reviewer subagent",
+  "category": "Plugins",
+  "artifactType": "plugin",
+  "tags": ["plugin", "review", "team", "curse-book"],
+  "parameters": [],
+  "pluginManifest": {
+    "name": "team-review-kit",
+    "version": "1.0.0",
+    "description": "Team code review kit with standards, review skill, and reviewer subagent",
+    "author": "Curse Book",
+    "childTemplateIds": [
+      "typescript-standards",
+      "code-review",
+      "subagent-code-reviewer"
+    ]
+  },
+  "bodyTemplate": "",
+  "source": "curse-book",
+  "highlights": ["plugin bundle", "code review", "team"],
+  "updatedAt": "2026-07-10"
+}

@@ -1,0 +1,39 @@
+{
+  "id": "java-spring-boot",
+  "name": "Java Spring Boot",
+  "description": "Spring Boot REST APIs, layering, and testing conventions",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["java", "spring", "backend", "curse-book"],
+  "parameters": [
+    {
+      "key": "layeredArchitecture",
+      "label": "Strict layered architecture",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "dtoValidation",
+      "label": "Bean validation on DTOs",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "integrationTests",
+      "label": "@SpringBootTest integration tests",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Java Spring Boot service conventions",
+    "globs": "**/*.{java,kt}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Java Spring Boot Standards\n\n- Prefer constructor injection; avoid field injection\n- Use records or immutable DTOs for API contracts where possible\n{{#if parameters.layeredArchitecture}}\n- Layering: controller → service → repository; no repository calls from controllers\n- Domain exceptions mapped to HTTP status via `@ControllerAdvice`\n{{/if}}\n{{#if parameters.dtoValidation}}\n- Validate request bodies with Jakarta Bean Validation (`@Valid`, `@NotNull`, etc.)\n{{/if}}\n- Externalize config via `application.yml`; profile-specific overrides for dev/prod\n- Log structured context (request id, user id) at service boundaries\n{{#if parameters.integrationTests}}\n- Integration tests with `@SpringBootTest` + Testcontainers for databases\n- Slice tests (`@WebMvcTest`, `@DataJpaTest`) for focused coverage\n{{/if}}\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/java-*.mdc",
+  "highlights": ["Java", "Spring Boot", "REST", "testing"],
+  "updatedAt": "2026-07-10"
+}

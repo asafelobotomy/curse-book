@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 /**
  * Add sourceUrl, highlights, and updatedAt to built-in catalog/*.json templates.
+ * Usage: node scripts/patch-catalog-metadata.mjs [--force]
  */
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 
+const execFileAsync = promisify(execFile);
+const FORCE = process.argv.includes("--force");
 const CATALOG_DIR = "catalog";
 const REPO = "asafelobotomy/curse-book";
 const BASE = `https://github.com/${REPO}/blob/main/catalog`;
@@ -30,9 +35,25 @@ const HIGHLIGHT_MAP = {
   accessibility: ["accessibility", "a11y", "WCAG"],
 };
 
+async function getGitUpdatedAt(filePath) {
+  try {
+    const { stdout } = await execFileAsync("git", [
+      "log",
+      "-1",
+      "--format=%aI",
+      "--",
+      join(CATALOG_DIR, filePath),
+    ]);
+    const iso = stdout.trim();
+    if (!iso) return undefined;
+    return iso.slice(0, 10);
+  } catch {
+    return undefined;
+  }
+}
+
 async function main() {
   const files = (await readdir(CATALOG_DIR)).filter((f) => f.endsWith(".json"));
-  const today = new Date().toISOString().slice(0, 10);
 
   for (const file of files) {
     const path = join(CATALOG_DIR, file);
@@ -44,14 +65,18 @@ async function main() {
     template.sourceRepo = REPO;
     template.sourcePath = file;
     template.highlights = template.highlights ?? HIGHLIGHT_MAP[id] ?? template.tags?.slice(0, 3) ?? [];
-    template.updatedAt = template.updatedAt ?? today;
+
+    if (FORCE || !template.updatedAt) {
+      const gitDate = await getGitUpdatedAt(file);
+      if (gitDate) template.updatedAt = gitDate;
+    }
 
     if (!template.tags?.includes("curse-book")) {
       template.tags = [...(template.tags ?? []), "curse-book"];
     }
 
     await writeFile(path, JSON.stringify(template, null, 2) + "\n");
-    console.log(`Patched ${file}`);
+    console.log(`Patched ${file}${template.updatedAt ? ` (${template.updatedAt})` : ""}`);
   }
 }
 

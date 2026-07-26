@@ -1,0 +1,33 @@
+{
+  "id": "acr-gamemaker-gml",
+  "name": "Gamemaker Gml",
+  "description": "GameMaker Language (GML) rules for scripts, objects, events, rooms, data structures, and performance-minded game code",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "gamemaker gml"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "GameMaker Language (GML) rules for scripts, objects, events, rooms, data structures, and performance-minded game code",
+    "globs": "[\"**/*.gml\", \"**/*.yy\", \"**/*.yyp\"]",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# GameMaker GML Rules\n\n## Code Organization\n\n- Keep object event code short and move reusable behavior into scripts or functions.\n- Use clear prefixes or naming conventions for scripts, objects, sprites, rooms, and globals.\n- Prefer functions over copy-pasted event blocks.\n- Keep create-step-draw responsibilities separate.\n- Put initialization in Create, simulation in Step, and rendering-only work in Draw.\n\n## GML Style\n\n- Use descriptive variable names and avoid one-letter names outside small loops.\n- Prefer local variables with `var` or function-scoped declarations over unnecessary instance variables.\n- Use constants, enums, and macros for repeated identifiers, layer names, states, and collision groups.\n- Guard optional instance references with `instance_exists`.\n- Keep global state minimal and document it.\n\n## Gameplay Architecture\n\n- Use finite state machines for player, enemy, UI, and game-flow states.\n- Keep collision logic explicit and deterministic.\n- Separate input collection from action execution.\n- Use alarms, timelines, or explicit timers consistently; do not mix patterns without reason.\n- Store save data through structured maps/structs and version the save format.\n\n## Performance\n\n- Avoid expensive searches such as broad `instance_find` or repeated collision scans in every Step event.\n- Cache frequently used asset IDs, layer IDs, and object references when safe.\n- Destroy data structures when no longer needed.\n- Use object pooling for frequent projectiles, particles, or short-lived effects when allocation becomes costly.\n- Profile before optimizing and keep hot-path code simple.\n\n## Debugging and Testing\n\n- Add debug overlays for collision boxes, state, velocity, and AI decisions when useful.\n- Use assertions or explicit guard clauses for impossible states.\n- Test room transitions, pause/resume, save/load, and controller/keyboard input separately.\n- Keep reproducible test rooms for complex mechanics.\n\n## Common Mistakes\n\n- Do not put game logic in Draw events.\n- Do not create data structures without destroying them.\n- Do not rely on room editor instance order for critical behavior.\n- Do not hardcode magic numeric state IDs.",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/gamemaker-gml.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/gamemaker-gml.mdc",
+  "highlights": [
+    "Rules",
+    "Code",
+    "Organization",
+    "Keep",
+    "Prefer",
+    "Create"
+  ],
+  "updatedAt": "2026-05-13"
+}

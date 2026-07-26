@@ -1,0 +1,39 @@
+{
+  "id": "node-express-api",
+  "name": "Node Express API",
+  "description": "Express.js REST API structure, middleware, and error handling",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["node", "express", "api", "backend", "curse-book"],
+  "parameters": [
+    {
+      "key": "typescript",
+      "label": "TypeScript (vs JavaScript)",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "zodValidation",
+      "label": "Zod request validation",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "structuredLogging",
+      "label": "Structured JSON logging",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Node.js Express API conventions",
+    "globs": "**/*.{ts,js}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Node Express API Standards\n\n- One router per resource; mount under versioned prefix (`/api/v1`)\n- Async route handlers wrapped to forward errors to centralized middleware\n{{#if parameters.typescript}}\n- Use TypeScript with strict mode; typed request/response where practical\n{{/if}}\n{{#if parameters.zodValidation}}\n- Validate `body`, `query`, and `params` with Zod schemas at route entry\n{{/if}}\n- Never block the event loop with sync I/O in request path\n- Return consistent error shape: `{ error: { code, message, details? } }`\n{{#if parameters.structuredLogging}}\n- Log as JSON with level, requestId, and duration; no secrets in logs\n{{/if}}\n- Use dependency injection or factory pattern for testable services\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/es-module-nodejs-guidelines-*.mdc",
+  "highlights": ["Node.js", "Express", "REST", "Zod"],
+  "updatedAt": "2026-07-10"
+}

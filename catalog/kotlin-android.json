@@ -1,0 +1,39 @@
+{
+  "id": "kotlin-android",
+  "name": "Kotlin Android",
+  "description": "Kotlin Android app architecture with Jetpack Compose",
+  "category": "Mobile",
+  "artifactType": "rule",
+  "tags": ["kotlin", "android", "compose", "mobile", "curse-book"],
+  "parameters": [
+    {
+      "key": "useCompose",
+      "label": "Jetpack Compose UI",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "mvvm",
+      "label": "MVVM + ViewModel",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "coroutines",
+      "label": "Kotlin coroutines for async",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Kotlin Android development standards",
+    "globs": "**/*.{kt,kts}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Kotlin Android Standards\n\n- Use Kotlin idioms: data classes, sealed types, extension functions over Java patterns\n{{#if parameters.useCompose}}\n- Build UI with Jetpack Compose; hoist state and keep composables stateless where possible\n- Use `remember` / `derivedStateOf` appropriately; avoid heavy work in composition\n{{/if}}\n{{#if parameters.mvvm}}\n- ViewModels expose `StateFlow`/`UiState`; Activities/Fragments/Composables observe only\n- No Android framework types in domain layer\n{{/if}}\n{{#if parameters.coroutines}}\n- Use coroutines + Flow for async; inject dispatchers for testability\n- Handle cancellation in long-running work\n{{/if}}\n- Dependency injection via Hilt; constructor injection for ViewModels and repositories\n- Write instrumented tests for navigation; unit test ViewModels and use cases\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/android-jetpack-compose-*.mdc",
+  "highlights": ["Kotlin", "Android", "Compose", "MVVM"],
+  "updatedAt": "2026-07-10"
+}

@@ -29,9 +29,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Rust Standards\n\n- Prefer `Result<T, E>` over panics for recoverable errors\n{{#if parameters.useThiserror}}\n- Use `thiserror` for library error types with `#[derive(Error)]`\n{{/if}}\n- Use `?` operator for error propagation\n- Avoid `unwrap()` in production code paths\n{{#if parameters.clippyStrict}}\n- Run `cargo clippy` and fix all warnings before committing\n{{/if}}\n- Document public APIs with `///` doc comments\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/rust-standards.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "rust-standards.json",
   "highlights": [
     "Rust",

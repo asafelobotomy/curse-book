@@ -3,14 +3,19 @@ mod catalog;
 mod compiler;
 mod db;
 mod deploy;
+mod git;
+mod mcp;
 mod ollama;
 mod pack;
 mod scanner;
 mod types;
+mod workflow;
 
 use chrono::Utc;
 use db::Database;
+use deploy::DeployTarget;
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::State;
 use types::*;
@@ -55,6 +60,7 @@ fn create_preset_from_template(
     state: State<AppState>,
     template_id: String,
     name: Option<String>,
+    parameters: Option<HashMap<String, serde_json::Value>>,
 ) -> Result<Preset, String> {
     with_db(&state, |db| {
         let template = db
@@ -62,9 +68,14 @@ fn create_preset_from_template(
             .map_err(|e| e.to_string())?
             .ok_or_else(|| format!("Template not found: {template_id}"))?;
 
-        let mut parameters = HashMap::new();
+        let mut preset_parameters = HashMap::new();
         for field in &template.parameters {
-            parameters.insert(field.key.clone(), field.default.clone());
+            let value = parameters
+                .as_ref()
+                .and_then(|p| p.get(&field.key))
+                .cloned()
+                .unwrap_or_else(|| field.default.clone());
+            preset_parameters.insert(field.key.clone(), value);
         }
 
         let now = Utc::now().to_rfc3339();
@@ -74,7 +85,7 @@ fn create_preset_from_template(
             name: name.unwrap_or_else(|| template.name.clone()),
             description: template.description.clone(),
             artifact_type: template.artifact_type.clone(),
-            parameters,
+            parameters: preset_parameters,
             created_at: now.clone(),
             updated_at: now,
         };
@@ -107,10 +118,13 @@ fn compile_preset_cmd(state: State<AppState>, preset_id: String) -> Result<Compi
 
 #[tauri::command]
 fn compile_preview_cmd(
+    state: State<AppState>,
     template: TemplateDefinition,
     parameters: HashMap<String, serde_json::Value>,
 ) -> Result<CompileResult, String> {
-    compiler::compile_preview(&template, &parameters).map_err(|e| e.to_string())
+    with_db(&state, |db| {
+        compiler::compile_preview(db, &template, &parameters).map_err(|e| e.to_string())
+    })
 }
 
 #[tauri::command]
@@ -131,7 +145,7 @@ fn get_template_stats(
                 parameters.insert(field.key.clone(), field.default.clone());
             }
 
-            let result = compiler::compile_preview(&template, &parameters)
+            let result = compiler::compile_preview(db, &template, &parameters)
                 .map_err(|e| e.to_string())?;
 
             stats.push(TemplateStats {
@@ -146,7 +160,17 @@ fn get_template_stats(
 
 #[tauri::command]
 fn scan_projects(state: State<AppState>, roots: Option<Vec<String>>) -> Result<Vec<ProjectProfile>, String> {
-    let scan_roots = roots.unwrap_or_else(scanner::default_scan_roots);
+    let scan_roots = if let Some(r) = roots {
+        r
+    } else {
+        with_db(&state, |db| {
+            match db.get_setting("scan_roots") {
+                Ok(Some(json)) => serde_json::from_str(&json).map_err(|e| e.to_string()),
+                Ok(None) => Ok(scanner::default_scan_roots()),
+                Err(e) => Err(e.to_string()),
+            }
+        })?
+    };
     let discovered = scanner::scan_directories(&scan_roots, 4);
 
     with_db(&state, |db| {
@@ -193,7 +217,10 @@ fn preview_deploy(
     project_path: String,
 ) -> Result<Vec<DeployDiff>, String> {
     with_db(&state, |db| {
-        deploy::preview_deploy(db, &preset_id, &project_path).map_err(|e| e.to_string())
+        let target = DeployTarget::Project {
+            path: project_path.clone(),
+        };
+        deploy::preview_deploy(db, &preset_id, &target).map_err(|e| e.to_string())
     })
 }
 
@@ -204,20 +231,332 @@ fn deploy_preset(
     project_path: String,
 ) -> Result<DeployResult, String> {
     with_db(&state, |db| {
-        let result = deploy::deploy_preset(db, &preset_id, &project_path).map_err(|e| e.to_string())?;
-        if let Ok(mut projects) = db.list_projects() {
-            if let Some(project) = projects.iter_mut().find(|p| p.path == project_path) {
-                project.last_deployed_at = Some(Utc::now().to_rfc3339());
-                let _ = db.upsert_project(project);
-            }
+        let target = DeployTarget::Project {
+            path: project_path.clone(),
+        };
+        let result = deploy::deploy_preset(db, &preset_id, &target).map_err(|e| e.to_string())?;
+        auto_assign_and_touch(db, &project_path, &preset_id)?;
+        Ok(result)
+    })
+}
+
+#[tauri::command]
+fn preview_deploy_to_user(
+    state: State<AppState>,
+    preset_id: String,
+) -> Result<Vec<DeployDiff>, String> {
+    with_db(&state, |db| {
+        deploy::preview_deploy(db, &preset_id, &DeployTarget::UserCursebook)
+            .map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn deploy_preset_to_user(
+    state: State<AppState>,
+    preset_id: String,
+) -> Result<DeployResult, String> {
+    with_db(&state, |db| {
+        deploy::deploy_preset(db, &preset_id, &DeployTarget::UserCursebook)
+            .map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn preview_deploy_with_target(
+    state: State<AppState>,
+    preset_id: String,
+    target_kind: String,
+    project_path: Option<String>,
+    plugin_name: Option<String>,
+) -> Result<Vec<DeployDiff>, String> {
+    with_db(&state, |db| {
+        let target = deploy::parse_deploy_target(
+            &target_kind,
+            project_path.as_deref(),
+            plugin_name.as_deref(),
+        )
+        .map_err(|e| e.to_string())?;
+        deploy::preview_deploy(db, &preset_id, &target).map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn deploy_preset_with_target(
+    state: State<AppState>,
+    preset_id: String,
+    target_kind: String,
+    project_path: Option<String>,
+    plugin_name: Option<String>,
+) -> Result<DeployResult, String> {
+    with_db(&state, |db| {
+        let target = deploy::parse_deploy_target(
+            &target_kind,
+            project_path.as_deref(),
+            plugin_name.as_deref(),
+        )
+        .map_err(|e| e.to_string())?;
+        let result = deploy::deploy_preset(db, &preset_id, &target).map_err(|e| e.to_string())?;
+        if let DeployTarget::Project { path } = &target {
+            auto_assign_and_touch(db, path, &preset_id)?;
         }
         Ok(result)
     })
 }
 
 #[tauri::command]
+fn merge_preview_mcp(
+    state: State<AppState>,
+    preset_id: String,
+    target_kind: String,
+    project_path: Option<String>,
+) -> Result<McpMergePreview, String> {
+    with_db(&state, |db| {
+        let target = deploy::parse_deploy_target(
+            &target_kind,
+            project_path.as_deref(),
+            None,
+        )
+        .map_err(|e| e.to_string())?;
+        deploy::merge_preview_mcp(db, &preset_id, &target).map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn list_installed_plugins(state: State<AppState>) -> Result<Vec<InstalledPlugin>, String> {
+    with_db(&state, |db| {
+        db.list_installed_plugins().map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn uninstall_plugin(state: State<AppState>, name: String) -> Result<(), String> {
+    with_db(&state, |db| deploy::uninstall_plugin(db, &name).map_err(|e| e.to_string()))
+}
+
+#[tauri::command]
+fn check_plugin_sync(state: State<AppState>, name: String) -> Result<SyncStatus, String> {
+    with_db(&state, |db| {
+        deploy::check_plugin_sync(db, &name).map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn get_mcp_env_vars(state: State<AppState>, preset_id: String) -> Result<Vec<String>, String> {
+    with_db(&state, |db| {
+        let preset = db
+            .get_preset(&preset_id)
+            .map_err(|e| e.to_string())?
+            .ok_or_else(|| format!("Preset not found: {preset_id}"))?;
+        let template = db
+            .get_template(&preset.template_id)
+            .map_err(|e| e.to_string())?
+            .ok_or_else(|| format!("Template not found: {}", preset.template_id))?;
+        Ok(mcp::env_vars_for_template(&template))
+    })
+}
+
+#[tauri::command]
+fn get_template_mcp_env_vars(
+    state: State<AppState>,
+    template_id: String,
+) -> Result<Vec<String>, String> {
+    with_db(&state, |db| {
+        let template = db
+            .get_template(&template_id)
+            .map_err(|e| e.to_string())?
+            .ok_or_else(|| format!("Template not found: {template_id}"))?;
+        Ok(mcp::env_vars_for_template(&template))
+    })
+}
+
+#[tauri::command]
 fn check_sync_status(project_path: String) -> Result<SyncStatus, String> {
     deploy::check_sync(&project_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn check_global_sync_status() -> Result<SyncStatus, String> {
+    deploy::check_global_sync().map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn assign_preset_to_project(
+    state: State<AppState>,
+    project_id: String,
+    preset_id: String,
+) -> Result<ProjectProfile, String> {
+    with_db(&state, |db| {
+        db.assign_preset_to_project(&project_id, &preset_id)
+            .map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn unassign_preset_from_project(
+    state: State<AppState>,
+    project_id: String,
+    preset_id: String,
+) -> Result<ProjectProfile, String> {
+    with_db(&state, |db| {
+        db.unassign_preset_from_project(&project_id, &preset_id)
+            .map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn deploy_project_presets(
+    state: State<AppState>,
+    project_id: String,
+) -> Result<Vec<DeployResult>, String> {
+    with_db(&state, |db| {
+        let project = db
+            .get_project(&project_id)
+            .map_err(|e| e.to_string())?
+            .ok_or_else(|| format!("Project not found: {project_id}"))?;
+        let results =
+            deploy::deploy_project_presets(db, &project.path, &project.preset_ids)
+                .map_err(|e| e.to_string())?;
+        let mut updated = project.clone();
+        updated.last_deployed_at = Some(Utc::now().to_rfc3339());
+        db.upsert_project(&updated).map_err(|e| e.to_string())?;
+        Ok(results)
+    })
+}
+
+#[tauri::command]
+fn list_projects_for_preset(
+    state: State<AppState>,
+    preset_id: String,
+) -> Result<Vec<ProjectProfile>, String> {
+    with_db(&state, |db| {
+        db.list_projects_for_preset(&preset_id)
+            .map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn git_status_project(project_path: String, force: Option<bool>) -> Result<GitStatusSummary, String> {
+    git::status_summary(&project_path, force.unwrap_or(false)).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn git_stage_project(project_path: String) -> Result<Vec<String>, String> {
+    git::stage_cursor_files(&project_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn git_commit_project(
+    project_path: String,
+    message: Option<String>,
+) -> Result<GitResultPayload, String> {
+    git::commit(&project_path, message.as_deref()).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn git_push_project(project_path: String) -> Result<GitResultPayload, String> {
+    git::push(&project_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn git_ship_project(
+    project_path: String,
+    message: Option<String>,
+    push: bool,
+    force: Option<bool>,
+) -> Result<GitResultPayload, String> {
+    git::ship(
+        &project_path,
+        message.as_deref(),
+        push,
+        force.unwrap_or(false),
+    )
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn open_in_cursor(project_path: String) -> Result<(), String> {
+    workflow::open_in_cursor(&project_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn export_user_rule_text(state: State<AppState>, preset_id: String) -> Result<String, String> {
+    with_db(&state, |db| {
+        workflow::export_user_rule_text(db, &preset_id).map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn get_mcp_config_snippet() -> Result<String, String> {
+    let data_dir = dirs::data_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join("curse-book")
+        .to_string_lossy()
+        .to_string();
+    Ok(workflow::build_mcp_config_snippet(&data_dir))
+}
+
+#[tauri::command]
+fn get_scan_roots(state: State<AppState>) -> Result<Vec<String>, String> {
+    with_db(&state, |db| {
+        match db.get_setting("scan_roots").map_err(|e| e.to_string())? {
+            Some(json) => serde_json::from_str(&json).map_err(|e| e.to_string()),
+            None => Ok(scanner::default_scan_roots()),
+        }
+    })
+}
+
+#[tauri::command]
+fn set_scan_roots(state: State<AppState>, roots: Vec<String>) -> Result<(), String> {
+    with_db(&state, |db| {
+        let json = serde_json::to_string(&roots).map_err(|e| e.to_string())?;
+        db.set_setting("scan_roots", &json)
+            .map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn get_custom_catalog_paths(state: State<AppState>) -> Result<Vec<String>, String> {
+    with_db(&state, |db| {
+        catalog::load_custom_catalog_paths(db).map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn set_custom_catalog_paths(state: State<AppState>, paths: Vec<String>) -> Result<usize, String> {
+    with_db(&state, |db| {
+        let json = serde_json::to_string(&paths).map_err(|e| e.to_string())?;
+        db.set_setting("custom_catalog_paths", &json)
+            .map_err(|e| e.to_string())?;
+        catalog::import_catalog_to_db(db).map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn list_catalog_import_meta(state: State<AppState>) -> Result<Vec<crate::types::PluginSource>, String> {
+    with_db(&state, |db| {
+        db.list_plugin_sources().map_err(|e| e.to_string())
+    })
+}
+
+#[tauri::command]
+fn list_catalog_sources() -> Result<Vec<crate::types::CatalogSourceEntry>, String> {
+    catalog::load_sources_registry()
+        .map(|r| r.sources)
+        .map_err(|e| e.to_string())
+}
+
+fn auto_assign_and_touch(db: &Database, project_path: &str, preset_id: &str) -> Result<(), String> {
+    if let Ok(projects) = db.list_projects() {
+        if let Some(mut project) = projects.into_iter().find(|p| p.path == project_path) {
+            if !project.preset_ids.contains(&preset_id.to_string()) {
+                project.preset_ids.push(preset_id.to_string());
+            }
+            project.last_deployed_at = Some(Utc::now().to_rfc3339());
+            db.upsert_project(&project).map_err(|e| e.to_string())?;
+        }
+    }
+    Ok(())
 }
 
 #[tauri::command]
@@ -319,6 +658,16 @@ fn list_team_packs(path: String) -> Result<Vec<String>, String> {
     pack::list_pack_directory(&path).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn get_setting_cmd(state: State<AppState>, key: String) -> Result<Option<String>, String> {
+    with_db(&state, |db| db.get_setting(&key).map_err(|e| e.to_string()))
+}
+
+#[tauri::command]
+fn set_setting_cmd(state: State<AppState>, key: String, value: String) -> Result<(), String> {
+    with_db(&state, |db| db.set_setting(&key, &value).map_err(|e| e.to_string()))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let db = Database::open().expect("Failed to open database");
@@ -351,7 +700,36 @@ pub fn run() {
             delete_project,
             preview_deploy,
             deploy_preset,
+            preview_deploy_to_user,
+            deploy_preset_to_user,
+            preview_deploy_with_target,
+            deploy_preset_with_target,
+            merge_preview_mcp,
+            list_installed_plugins,
+            uninstall_plugin,
+            check_plugin_sync,
+            get_mcp_env_vars,
+            get_template_mcp_env_vars,
             check_sync_status,
+            check_global_sync_status,
+            assign_preset_to_project,
+            unassign_preset_from_project,
+            deploy_project_presets,
+            list_projects_for_preset,
+            git_status_project,
+            git_stage_project,
+            git_commit_project,
+            git_push_project,
+            git_ship_project,
+            open_in_cursor,
+            export_user_rule_text,
+            get_mcp_config_snippet,
+            get_scan_roots,
+            set_scan_roots,
+            get_custom_catalog_paths,
+            set_custom_catalog_paths,
+            list_catalog_sources,
+            list_catalog_import_meta,
             run_benchmark,
             list_benchmarks,
             ollama_status,
@@ -363,6 +741,8 @@ pub fn run() {
             import_pack,
             init_team_library,
             list_team_packs,
+            get_setting_cmd,
+            set_setting_cmd,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

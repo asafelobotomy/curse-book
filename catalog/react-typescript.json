@@ -39,9 +39,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# React + TypeScript Patterns\n\n- Use functional components with hooks\n{{#if parameters.preferNamedExports}}\n- Use named exports, not default exports\n{{/if}}\n- Keep components under {{parameters.componentMaxLines}} lines; extract subcomponents when larger\n- Co-locate component-specific types with the component file\n{{#if parameters.useTailwind}}\n- Use Tailwind utility classes; avoid inline style objects\n{{/if}}\n- Extract custom hooks for reusable logic\n- Prefer composition over prop drilling\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/react-typescript.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "react-typescript.json",
   "highlights": [
     "React",

@@ -1,0 +1,23 @@
+{
+  "id": "plugin-devops-hooks",
+  "name": "DevOps Hooks Kit",
+  "description": "Composite plugin: dangerous shell hook bundle plus GitHub MCP",
+  "category": "Plugins",
+  "artifactType": "plugin",
+  "tags": ["plugin", "hooks", "mcp", "devops", "curse-book"],
+  "parameters": [],
+  "pluginManifest": {
+    "name": "devops-hooks",
+    "version": "1.0.0",
+    "description": "DevOps safety hooks and GitHub MCP integration",
+    "author": "Curse Book",
+    "childTemplateIds": [
+      "hook-block-dangerous-shell",
+      "mcp-github"
+    ]
+  },
+  "bodyTemplate": "",
+  "source": "curse-book",
+  "highlights": ["plugin bundle", "hooks", "GitHub MCP"],
+  "updatedAt": "2026-07-10"
+}

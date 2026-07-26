@@ -1,10 +1,10 @@
-import { LayoutGrid, FolderOpen, Pencil, FlaskConical, Sparkles, Package, Settings } from "lucide-react";
+import { LayoutGrid, FolderOpen, Library, FlaskConical, Sparkles, Package, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "../lib/utils";
 
 const links = [
   { to: "/", icon: LayoutGrid, label: "Catalog" },
-  { to: "/presets", icon: Pencil, label: "Presets" },
+  { to: "/library", icon: Library, label: "Library" },
   { to: "/projects", icon: FolderOpen, label: "Projects" },
   { to: "/benchmarks", icon: FlaskConical, label: "Benchmarks" },
   { to: "/ai", icon: Sparkles, label: "Local AI" },

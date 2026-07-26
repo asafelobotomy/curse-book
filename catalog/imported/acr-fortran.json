@@ -1,0 +1,33 @@
+{
+  "id": "acr-fortran",
+  "name": "Fortran",
+  "description": "Modern Fortran rules for scientific computing, modules, explicit interfaces, kind parameters, memory safety, and testing",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "fortran"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Modern Fortran rules for scientific computing, modules, explicit interfaces, kind parameters, memory safety, and testing",
+    "globs": "[\"**/*.f\", \"**/*.f90\", \"**/*.f95\", \"**/*.f03\", \"**/*.f08\", \"**/*.for\", \"**/*.ftn\", \"CMakeLists.txt\", \"*.cmake\", \"Makefile\"]",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# Fortran Programming Guidelines\n\n## Basic Principles\n\n- Use modern Fortran standards such as Fortran 2003, 2008, or newer.\n- Use `implicit none` in every program unit.\n- Put procedures in modules to provide explicit interfaces.\n- Keep modules focused and place each major module in its own file.\n- Prefer clear, structured code over clever language tricks.\n- Avoid obsolete features such as COMMON blocks, GOTO-heavy control flow, and numeric labels.\n\n## Kinds and Types\n\n- Define numeric kind parameters in one shared module, such as `kind_mod`.\n- Use `real(kind=dp)` or the project-approved real kind for floating point values.\n- Use `integer(kind=i4)` or the project-approved integer kind for integer values.\n- Define constants such as pi explicitly.\n- Include units in comments for physical quantities.\n- Use derived types to group related data instead of passing many primitive arguments.\n\n## Naming and Style\n\n- Use lowercase for language keywords and most identifiers.\n- Use underscores for multi-word names.\n- Avoid names that differ only by case.\n- Use descriptive names for procedures and state.\n- Repeat the procedure or module name after `end` statements.\n- Keep indentation consistent in `do`, `if`, `select case`, and module blocks.\n\n## Procedures\n\n- Keep subroutines and functions short and single-purpose.\n- Use `intent(in)`, `intent(out)`, or `intent(inout)` for every dummy argument.\n- Keep functions free of side effects whenever possible.\n- Prefer early validation and clear returns over deep nesting.\n- Use `use, only:` when importing from modules.\n\n## Memory and Arrays\n\n- Prefer allocatable arrays over pointers unless pointer semantics are required.\n- Check allocation state and array sizes before use.\n- Deallocate allocatable arrays when their lifetime is not naturally scoped.\n- Specify array bounds clearly when they matter.\n- Avoid unnecessary dynamic allocation in hot loops.\n\n## Testing and Build\n\n- Use CMake, fpm, Make, or the project-standard build system consistently.\n- Compile with warnings enabled and treat important warnings as failures in CI.\n- Add unit tests for public procedures and integration tests for numerical workflows.\n- Test boundary conditions, invalid inputs, and representative scientific cases.\n- Verify numerical tolerances explicitly rather than relying on exact floating point equality.\n\n## Common Mistakes\n\n- Do not declare variables after executable code unless using a block construct.\n- Do not assume `random_number` is a function; it is a subroutine.\n- Do not write to stdout from pure procedures.\n- Do not declare the same variable twice in the same scope.\n- Do not assume pi, dp, or project kinds already exist without importing or defining them.",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/fortran.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/fortran.mdc",
+  "highlights": [
+    "Fortran",
+    "Programming",
+    "Guidelines",
+    "Basic",
+    "Principles",
+    "Keep"
+  ],
+  "updatedAt": "2026-05-13"
+}

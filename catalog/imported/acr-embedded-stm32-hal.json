@@ -1,0 +1,33 @@
+{
+  "id": "acr-embedded-stm32-hal",
+  "name": "Embedded Stm32 Hal",
+  "description": "Embedded C/C++ rules for MCU, STM32, HAL, interrupts, DMA, memory constraints, and hardware-focused testing",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "embedded stm32 hal"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Embedded C/C++ rules for MCU, STM32, HAL, interrupts, DMA, memory constraints, and hardware-focused testing",
+    "globs": "[\"**/*.c\", \"**/*.h\", \"**/*.cpp\", \"**/*.hpp\", \"**/*.ioc\", \"CMakeLists.txt\", \"Makefile\", \"platformio.ini\"]",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# Embedded MCU, STM32, and HAL Rules\n\n## Project Structure\n\n- Keep board support, drivers, middleware, application logic, and tests separate.\n- Isolate generated CubeMX or vendor code from hand-written application code.\n- Put hardware abstraction behind narrow interfaces so logic can be tested without hardware.\n- Document clock tree, pin mappings, peripheral ownership, and interrupt priorities.\n\n## STM32 HAL and Peripherals\n\n- Initialize peripherals in one place and avoid hidden reconfiguration.\n- Check return values from HAL calls and handle timeout/error cases.\n- Keep blocking HAL calls out of time-critical paths.\n- Use DMA for high-throughput UART, SPI, I2C, ADC, or timer capture paths when appropriate.\n- Document buffer ownership and lifetime for DMA operations.\n- Use `volatile` only for memory shared with ISRs or hardware registers.\n\n## Interrupts and Concurrency\n\n- Keep ISRs short and deterministic.\n- Defer heavy work from interrupts to the main loop, RTOS task, or event queue.\n- Protect shared data with critical sections, atomics, queues, or RTOS primitives.\n- Avoid dynamic allocation in interrupts.\n- Make interrupt priority decisions explicit.\n\n## Memory and Timing\n\n- Avoid heap allocation in firmware unless the project explicitly allows it.\n- Check stack usage for ISRs and RTOS tasks.\n- Keep lookup tables `const` so they can live in flash.\n- Use fixed-width integer types for hardware-facing code.\n- Add timeouts for hardware waits.\n- Treat watchdog configuration as part of application design, not a late add-on.\n\n## Testing and Debugging\n\n- Unit test pure logic on host builds.\n- Use hardware-in-the-loop tests for peripheral behavior.\n- Add assertions for impossible hardware states in debug builds.\n- Use SWD/JTAG, logic analyzers, and serial logs with rate limits.\n- Keep fault handlers useful: capture reset reason, fault registers, and build version when possible.\n\n## Common Mistakes\n\n- Do not modify generated files unless the workflow preserves changes.\n- Do not busy-wait forever on hardware flags.\n- Do not share buffers between DMA and CPU without synchronization.\n- Do not assume peripheral reset state after low-power modes.",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/embedded-stm32-hal.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/embedded-stm32-hal.mdc",
+  "highlights": [
+    "Embedded",
+    "Rules",
+    "Project",
+    "Structure",
+    "Keep",
+    "Isolate"
+  ],
+  "updatedAt": "2026-05-13"
+}

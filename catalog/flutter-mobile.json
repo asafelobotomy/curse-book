@@ -1,0 +1,39 @@
+{
+  "id": "flutter-mobile",
+  "name": "Flutter Mobile",
+  "description": "Flutter widget structure, state, and platform conventions",
+  "category": "Mobile",
+  "artifactType": "rule",
+  "tags": ["flutter", "dart", "mobile", "curse-book"],
+  "parameters": [
+    {
+      "key": "useRiverpod",
+      "label": "Riverpod for state",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "constWidgets",
+      "label": "Prefer const constructors",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "goldenTests",
+      "label": "Golden widget tests",
+      "fieldType": "toggle",
+      "default": false
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "Flutter mobile development standards",
+    "globs": "**/*.dart",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# Flutter Mobile Standards\n\n- Follow feature-first folder layout (`lib/features/<name>/`)\n- Keep widgets small; extract private `_Widget` classes for subtrees\n{{#if parameters.constWidgets}}\n- Use `const` constructors wherever possible to reduce rebuilds\n{{/if}}\n{{#if parameters.useRiverpod}}\n- Use Riverpod providers for app state; avoid `setState` in large widgets\n- Prefer `AsyncValue` for loading/error/data UI states\n{{else}}\n- Use `ChangeNotifier` or BLoC consistently within a feature; do not mix patterns\n{{/if}}\n- Platform channels only when plugins are insufficient; document channel contracts\n{{#if parameters.goldenTests}}\n- Add golden tests for key screens; update goldens intentionally in PRs\n{{/if}}\n- Run `dart format` and `flutter analyze` before commit\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/flutter-*.mdc",
+  "highlights": ["Flutter", "Dart", "widgets", "Riverpod"],
+  "updatedAt": "2026-07-10"
+}

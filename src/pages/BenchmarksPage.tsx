@@ -79,13 +79,13 @@ export function BenchmarksPage() {
       <header className="mb-6">
         <h2 className="text-2xl font-bold">Benchmark Lab</h2>
         <p className="text-[var(--color-text-muted)] mt-1">
-          Measure token footprint and trigger precision for your presets
+          Measure token footprint and trigger precision for library items
         </p>
       </header>
 
       <Card className="mb-6 flex gap-3 items-end">
         <div className="flex-1">
-          <label className="block text-sm font-medium mb-1.5">Preset</label>
+          <label className="block text-sm font-medium mb-1.5">Library item</label>
           <select
             value={selectedPreset}
             onChange={(e) => setSelectedPreset(e.target.value)}
@@ -105,7 +105,7 @@ export function BenchmarksPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
-          <h3 className="font-semibold mb-4">Token footprint by preset</h3>
+          <h3 className="font-semibold mb-4">Token footprint by library item</h3>
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={chartData}>
@@ -163,7 +163,7 @@ export function BenchmarksPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-[var(--color-text-muted)] border-b border-[var(--color-border)]">
-                  <th className="pb-2 pr-4">Preset</th>
+                  <th className="pb-2 pr-4">Library item</th>
                   <th className="pb-2 pr-4">Tokens</th>
                   <th className="pb-2 pr-4">Lines</th>
                   <th className="pb-2 pr-4">Glob matches</th>

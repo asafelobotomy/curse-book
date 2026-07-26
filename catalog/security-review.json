@@ -29,9 +29,9 @@
     "disableModelInvocation": true
   },
   "bodyTemplate": "# Security Review\n\n## Checklist\n\n{{#if parameters.checkOwasp}}\n- [ ] No SQL injection (parameterized queries only)\n- [ ] No XSS (sanitize output, use CSP)\n- [ ] Authentication and authorization properly enforced\n- [ ] Input validation on all external data\n{{/if}}\n{{#if parameters.checkSecrets}}\n- [ ] No hardcoded secrets, API keys, or credentials\n- [ ] Environment variables used for sensitive config\n{{/if}}\n- [ ] Dependencies checked for known vulnerabilities\n\n## Severity levels\n\n- **Critical**: Exploitable vulnerability, block merge\n- **High**: Likely vulnerability, fix before merge\n- **Medium**: Defense-in-depth improvement\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/security-review.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "security-review.json",
   "highlights": [
     "security",

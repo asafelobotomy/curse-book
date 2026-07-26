@@ -1,0 +1,33 @@
+{
+  "id": "acr-cpp-programming-guidelines",
+  "name": "Cpp Programming Guidelines",
+  "description": "Cursor rules for C++ development with programming guidelines integration.",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "cpp programming guidelines"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Cursor rules for C++ development with programming guidelines integration.",
+    "globs": "**/*",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "# C++ Programming Guidelines\n\n## Basic Principles\n\n- Use English for all code and documentation.\n- Always declare the type of each variable and function (parameters and return value).\n- Create necessary types and classes.\n- Use Doxygen style comments to document public classes and methods.\n- Don't leave blank lines within a function.\n- Follow the one-definition rule (ODR).\n\n## Nomenclature\n\n- Use PascalCase for classes and structures.\n- Use camelCase for variables, functions, and methods.\n- Use ALL_CAPS for constants and macros.\n- Use snake_case for file and directory names.\n- Use UPPERCASE for environment variables.\n- Avoid magic numbers and define constants.\n- Start each function with a verb.\n- Use verbs for boolean variables. Example: isLoading, hasError, canDelete, etc.\n- Use complete words instead of abbreviations and ensure correct spelling.\n  - Except for standard abbreviations like API, URL, etc.\n  - Except for well-known abbreviations:\n    - i, j, k for loops\n    - err for errors\n    - ctx for contexts\n    - req, res for request/response parameters\n\n## Functions\n\n- Write short functions with a single purpose. Less than 20 instructions.\n- Name functions with a verb and something else.\n- If it returns a boolean, use isX or hasX, canX, etc.\n- If it doesn't return anything (void), use executeX or saveX, etc.\n- Avoid nesting blocks by:\n  - Early checks and returns.\n  - Extraction to utility functions.\n- Use standard library algorithms (std::for_each, std::transform, std::find, etc.) to avoid function nesting.\n- Use lambda functions for simple operations.\n- Use named functions for non-simple operations.\n- Use default parameter values instead of checking for null or nullptr.\n- Reduce function parameters using structs or classes\n  - Use an object to pass multiple parameters.\n  - Use an object to return multiple results.\n  - Declare necessary types for input arguments and output.\n- Use a single level of abstraction.\n\n## Data\n\n- Don't abuse primitive types and encapsulate data in composite types.\n- Avoid data validations in functions and use classes with internal validation.\n- Prefer immutability for data.\n- Use const for data that doesn't change.\n- Use constexpr for compile-time constants.\n- Use std::optional for possibly null values.\n\n## Classes\n\n- Follow SOLID principles.\n- Prefer composition over inheritance.\n- Declare interfaces as abstract classes or concepts.\n- Write small classes with a single purpose.\n  - Less than 200 instructions.\n  - Less than 10 public methods.\n  - Less than 10 properties.\n- Use the Rule of Five (or Rule of Zero) for resource management.\n- Make member variables private and provide getters/setters where necessary.\n- Use const-correctness for member functions.\n\n## Exceptions\n\n- Use exceptions to handle errors you don't expect.\n- If you catch an exception, it should be to:\n  - Fix an expected problem.\n  - Add context.\n  - Otherwise, use a global handler.\n- Use std::optional, std::expected, or error codes for expected failures.\n\n## Memory Management\n\n- Prefer smart pointers (std::unique_ptr, std::shared_ptr) over raw pointers.\n- Use RAII (Resource Acquisition Is Initialization) principles.\n- Avoid memory leaks by proper resource management.\n- Use std::vector and other standard containers instead of C-style arrays.\n\n## Testing\n\n- Follow the Arrange-Act-Assert convention for tests.\n- Name test variables clearly.\n- Follow the convention: inputX, mockX, actualX, expectedX, etc.\n- Write unit tests for each public function.\n- Use test doubles to simulate dependencies.\n  - Except for third-party dependencies that are not expensive to execute.\n- Write integration tests for each module.\n- Follow the Given-When-Then convention.\n\n## Project Structure\n\n- Use modular architecture\n- Organize code into logical directories:\n  - include/ for header files\n  - src/ for source files\n  - test/ for test files\n  - lib/ for libraries\n  - doc/ for documentation\n- Use CMake or similar build system.\n- Separate interface (.h) from implementation (.cpp).\n- Use namespaces to organize code logically.\n- Create a core namespace for foundational components.\n- Create a utils namespace for utility functions.\n\n## Standard Library\n\n- Use the C++ Standard Library whenever possible.\n- Prefer std::string over C-style strings.\n- Use std::vector, std::map, std::unordered_map, etc. for collections.\n- Use std::optional, std::variant, std::any for modern type safety.\n- Use std::filesystem for file operations.\n- Use std::chrono for time-related operations.\n\n## Concurrency\n\n- Use std::thread, std::mutex, std::lock_guard for thread safety.\n- Prefer task-based parallelism over thread-based parallelism.\n- Use std::atomic for atomic operations.\n- Avoid data races by proper synchronization.\n- Use thread-safe data structures when necessary.",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cpp-programming-guidelines-cursorrules-prompt-file.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/cpp-programming-guidelines-cursorrules-prompt-file.mdc",
+  "highlights": [
+    "SOLID",
+    "Programming",
+    "Guidelines",
+    "Basic",
+    "Principles",
+    "English"
+  ],
+  "updatedAt": "2026-05-13"
+}

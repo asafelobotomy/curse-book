@@ -34,9 +34,9 @@
     "alwaysApply": true
   },
   "bodyTemplate": "# Monorepo Conventions\n\n- Respect package boundaries; no cross-package deep imports\n- Place shared code in dedicated packages, not duplicated\n{{#if parameters.sharedPackages}}\n- Extract shared types, utils, and configs into `packages/` workspace\n{{/if}}\n- Run builds and tests from workspace root\n- Keep each package independently versionable\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/monorepo.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "monorepo.json",
   "highlights": [
     "monorepo",

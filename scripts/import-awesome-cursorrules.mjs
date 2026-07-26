@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 /**
  * Ingest templates from awesome-cursorrules GitHub repo.
- * Supports legacy subfolder .cursorrules files and modern rules/*.mdc layouts.
+ * Reads caps and excludeIds from catalog/sources.json.
  *
  * Usage: node scripts/import-awesome-cursorrules.mjs [output-dir]
  */
-import { mkdir, writeFile, readdir, readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, writeFile, readdir, readFile, unlink } from "node:fs/promises";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { getSourceById } from "./load-sources-registry.mjs";
 
 const execFileAsync = promisify(execFile);
 const OUTPUT_DIR = process.argv[2] ?? "catalog/imported";
 const CLONE_DIR = "/tmp/awesome-cursorrules-import";
-const MAX_TEMPLATES = 20;
-const SOURCE_REPO = "PatrickJS/awesome-cursorrules";
-const SOURCE_BASE = `https://github.com/${SOURCE_REPO}/blob/main`;
+const SOURCE_ID = "awesome-cursorrules";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT_CATALOG = join(__dirname, "..", "catalog");
 
 const CATEGORY_MAP = {
   react: "Frontend",
@@ -43,54 +45,16 @@ const CATEGORY_MAP = {
 };
 
 const TAG_KEYWORDS = [
-  "react",
-  "vue",
-  "next",
-  "angular",
-  "svelte",
-  "tailwind",
-  "typescript",
-  "javascript",
-  "python",
-  "django",
-  "fastapi",
-  "flask",
-  "go",
-  "rust",
-  "java",
-  "kotlin",
-  "docker",
-  "git",
-  "test",
-  "ai",
-  "node",
-  "express",
-  "graphql",
-  "postgres",
-  "mongodb",
+  "react", "vue", "next", "angular", "svelte", "tailwind",
+  "typescript", "javascript", "python", "django", "fastapi", "flask",
+  "go", "rust", "java", "kotlin", "docker", "git", "test", "ai",
+  "node", "express", "graphql", "postgres", "mongodb",
 ];
 
 const TECH_TERMS = [
-  "TypeScript",
-  "JavaScript",
-  "React",
-  "Vue",
-  "Next.js",
-  "Angular",
-  "Python",
-  "Rust",
-  "Go",
-  "Docker",
-  "GraphQL",
-  "PostgreSQL",
-  "MongoDB",
-  "Zod",
-  "Tailwind",
-  "FastAPI",
-  "Django",
-  "Clean Architecture",
-  "SOLID",
-  "TDD",
+  "TypeScript", "JavaScript", "React", "Vue", "Next.js", "Angular",
+  "Python", "Rust", "Go", "Docker", "GraphQL", "PostgreSQL", "MongoDB",
+  "Zod", "Tailwind", "FastAPI", "Django", "Clean Architecture", "SOLID", "TDD",
 ];
 
 function inferCategory(name) {
@@ -152,10 +116,11 @@ function parseMdc(content) {
   return { frontmatter: { description, globs, alwaysApply }, body };
 }
 
-function normalize(id, name, content, globs, description, sourcePath) {
+function normalize(id, name, content, globs, description, sourcePath, updatedAt, sourceRepo) {
+  const SOURCE_BASE = `https://github.com/${sourceRepo}/blob/main`;
   const tags = extractTags(name, content);
   const highlights = extractHighlights(content);
-  return {
+  const template = {
     id,
     name,
     description: description ?? `Imported from awesome-cursorrules: ${name}`,
@@ -170,31 +135,104 @@ function normalize(id, name, content, globs, description, sourcePath) {
     },
     skillFrontmatter: null,
     bodyTemplate: content.trim(),
-    source: "awesome-cursorrules",
+    source: SOURCE_ID,
     sourceUrl: `${SOURCE_BASE}/${sourcePath}`,
-    sourceRepo: SOURCE_REPO,
+    sourceRepo,
     sourcePath,
     highlights,
-    updatedAt: new Date().toISOString().slice(0, 10),
   };
+  if (updatedAt) template.updatedAt = updatedAt;
+  return template;
 }
 
-async function cloneRepo() {
+async function getSourceUpdatedAt(repoDir, sourcePath) {
+  try {
+    const { stdout } = await execFileAsync(
+      "git",
+      ["log", "-1", "--format=%aI", "--", sourcePath],
+      { cwd: repoDir },
+    );
+    const iso = stdout.trim();
+    if (!iso) return undefined;
+    return iso.slice(0, 10);
+  } catch {
+    return undefined;
+  }
+}
+
+async function loadRootCatalogIds() {
+  const ids = new Set();
+  try {
+    const files = await readdir(ROOT_CATALOG);
+    for (const f of files) {
+      if (f.endsWith(".json") && f !== "sources.json") {
+        ids.add(f.replace(/\.json$/, ""));
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return ids;
+}
+
+function isExcluded(id, baseName, excludeIds, rootIds, pruneIds) {
+  if (excludeIds.has(id) || pruneIds.has(id)) return true;
+  const slug = slugify(baseName);
+  const acrSlug = id.startsWith("acr-") ? id.slice(4) : slug;
+  for (const rootId of rootIds) {
+    if (acrSlug === rootId || slug === rootId || id === `acr-${rootId}`) {
+      return true;
+    }
+    const rootPrefix = rootId.split("-")[0];
+    if (acrSlug === rootPrefix && rootId.includes("-")) {
+      return true;
+    }
+  }
+  for (const ex of excludeIds) {
+    if (id === `acr-${ex}` || acrSlug === ex || slug === ex) return true;
+  }
+  return false;
+}
+
+async function cloneRepo(sourceRepo) {
   try {
     await execFileAsync("git", [
       "clone",
-      "--depth",
-      "1",
-      `https://github.com/${SOURCE_REPO}.git`,
+      "--filter=blob:none",
+      `https://github.com/${sourceRepo}.git`,
       CLONE_DIR,
     ]);
   } catch {
     console.log("Using existing clone at", CLONE_DIR);
   }
+  const { stdout } = await execFileAsync("git", ["-C", CLONE_DIR, "rev-parse", "HEAD"]);
+  return stdout.trim();
+}
+
+async function pruneOverlappingImports(outputDir, pruneIds) {
+  for (const id of pruneIds) {
+    const path = join(outputDir, `${id}.json`);
+    try {
+      await unlink(path);
+      console.log(`Pruned overlap: ${id}`);
+    } catch {
+      /* already absent */
+    }
+  }
 }
 
 async function main() {
-  await cloneRepo();
+  const { source } = await getSourceById(SOURCE_ID);
+  const MAX_TEMPLATES = source.bulkCap ?? 50;
+  const excludeIds = new Set(source.excludeIds ?? []);
+  const pruneIds = new Set(source.pruneImportedIds ?? []);
+  const rootIds = await loadRootCatalogIds();
+  for (const id of rootIds) excludeIds.add(id);
+  for (const id of pruneIds) excludeIds.add(id);
+
+  await pruneOverlappingImports(OUTPUT_DIR, pruneIds);
+
+  const commitSha = await cloneRepo(source.repo);
   await mkdir(OUTPUT_DIR, { recursive: true });
 
   const rulesDir = join(CLONE_DIR, "rules");
@@ -216,12 +254,16 @@ async function main() {
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ");
       const id = `acr-${slugify(entry.name)}`;
+      if (isExcluded(id, entry.name, excludeIds, rootIds, pruneIds)) {
+        console.log(`Skip (excluded): ${id}`);
+        continue;
+      }
       const sourcePath = `rules/${entry.name}/.cursorrules`;
-      const template = normalize(id, name, content, "**/*", undefined, sourcePath);
-      await writeFile(
-        join(OUTPUT_DIR, `${id}.json`),
-        JSON.stringify(template, null, 2),
+      const updatedAt = await getSourceUpdatedAt(CLONE_DIR, sourcePath);
+      const template = normalize(
+        id, name, content, "**/*", undefined, sourcePath, updatedAt, source.repo,
       );
+      await writeFile(join(OUTPUT_DIR, `${id}.json`), JSON.stringify(template, null, 2) + "\n");
       console.log(`Imported (legacy): ${id}`);
       count++;
       continue;
@@ -237,7 +279,12 @@ async function main() {
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ");
       const id = `acr-${slugify(baseName)}`;
+      if (isExcluded(id, baseName, excludeIds, rootIds, pruneIds)) {
+        console.log(`Skip (excluded): ${id}`);
+        continue;
+      }
       const sourcePath = `rules/${entry.name}`;
+      const updatedAt = await getSourceUpdatedAt(CLONE_DIR, sourcePath);
       const template = normalize(
         id,
         name || baseName,
@@ -245,17 +292,35 @@ async function main() {
         frontmatter.globs,
         frontmatter.description,
         sourcePath,
+        updatedAt,
+        source.repo,
       );
-      await writeFile(
-        join(OUTPUT_DIR, `${id}.json`),
-        JSON.stringify(template, null, 2),
-      );
+      await writeFile(join(OUTPUT_DIR, `${id}.json`), JSON.stringify(template, null, 2) + "\n");
       console.log(`Imported (mdc): ${id} (${name})`);
       count++;
     }
   }
 
+  const metaPath = join(OUTPUT_DIR, "acr-import-meta.json");
+  await writeFile(
+    metaPath,
+    JSON.stringify(
+      {
+        id: SOURCE_ID,
+        repo: source.repo,
+        commitSha,
+        importedAt: new Date().toISOString(),
+        templateCount: count,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+
   console.log(`\nDone. Imported ${count} templates to ${OUTPUT_DIR}`);
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -1,0 +1,71 @@
+{
+  "id": "imported-plugin-teaching",
+  "artifactType": "plugin",
+  "name": "teaching",
+  "description": "Skill mapping, practice plans, and learning retrospectives. Builds personalized roadmaps with milestones and practice checkpoints, and runs periodic reviews to adjust based on progress.",
+  "category": "Imported",
+  "tags": [
+    "plugin",
+    "cursor/plugins",
+    "imported"
+  ],
+  "parameters": [],
+  "pluginBundle": {
+    "manifest": {
+      "name": "teaching",
+      "displayName": "Teaching",
+      "version": "1.0.0",
+      "description": "Skill mapping, practice plans, and learning retrospectives. Builds personalized roadmaps with milestones and practice checkpoints, and runs periodic reviews to adjust based on progress.",
+      "author": {
+        "name": "Cursor",
+        "email": "plugins@cursor.com"
+      },
+      "homepage": "https://github.com/cursor/plugins",
+      "repository": "https://github.com/cursor/plugins",
+      "license": "MIT",
+      "logo": "assets/avatar.png",
+      "keywords": [
+        "teaching",
+        "study-plan",
+        "practice",
+        "feedback",
+        "mentorship"
+      ],
+      "category": "utilities",
+      "tags": [
+        "teaching",
+        "education",
+        "practice"
+      ],
+      "skills": "./skills/"
+    },
+    "files": [
+      {
+        "path": ".cursor-plugin/plugin.json",
+        "content": "{\n  \"name\": \"teaching\",\n  \"displayName\": \"Teaching\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Skill mapping, practice plans, and learning retrospectives. Builds personalized roadmaps with milestones and practice checkpoints, and runs periodic reviews to adjust based on progress.\",\n  \"author\": {\n    \"name\": \"Cursor\",\n    \"email\": \"plugins@cursor.com\"\n  },\n  \"homepage\": \"https://github.com/cursor/plugins\",\n  \"repository\": \"https://github.com/cursor/plugins\",\n  \"license\": \"MIT\",\n  \"logo\": \"assets/avatar.png\",\n  \"keywords\": [\n    \"teaching\",\n    \"study-plan\",\n    \"practice\",\n    \"feedback\",\n    \"mentorship\"\n  ],\n  \"category\": \"utilities\",\n  \"tags\": [\n    \"teaching\",\n    \"education\",\n    \"practice\"\n  ],\n  \"skills\": \"./skills/\"\n}\n"
+      },
+      {
+        "path": "README.md",
+        "content": "# Teaching plugin\n\nTeaching workflows: skill mapping, practice plans, and feedback loops.\n\n## Installation\n\n```bash\n/add-plugin teaching\n```\n\n## Components\n\n### Skills\n\n| Skill | Description |\n|:------|:------------|\n| `create-learning-path` | Build a personalized learning roadmap with milestones and practice checkpoints |\n| `run-learning-retrospective` | Evaluate progress, identify blockers, and adjust the learning plan |\n\n## License\n\nMIT\n"
+      },
+      {
+        "path": "skills/create-learning-path/SKILL.md",
+        "content": "---\nname: create-learning-path\ndescription: Build a personalized learning roadmap with milestones and practice checkpoints\n---\n\n# Create a learning path\n\n## Trigger\n\nBuilding capability in a topic over multiple sessions.\n\n## Workflow\n\n1. Assess baseline knowledge and target outcomes.\n2. Sequence topics from fundamentals to applied practice.\n3. Define milestone projects and time-boxed checkpoints.\n4. Add deliberate practice exercises with feedback criteria.\n5. Review progress and adjust pacing.\n\n## Tools\n\n- Use Ask user tool.\n\n## Guardrails\n\n- Keep milestones achievable within the stated schedule.\n- Include practice and reflection in every phase.\n- Avoid resource overload by prioritizing a small set of materials.\n\n## Output\n\n- Week-by-week or milestone-based plan\n- Practice assignments\n- Progress review rubric\n"
+      },
+      {
+        "path": "skills/run-learning-retrospective/SKILL.md",
+        "content": "---\nname: run-learning-retrospective\ndescription: Evaluate learning progress, identify blockers, and adjust the learning plan\n---\n\n# Run a learning retrospective\n\n## Trigger\n\nLearner completed a milestone and needs data-driven adjustment to their plan.\n\n## Workflow\n\n1. Review completed work against target outcomes.\n2. Identify recurring blockers and weak concepts.\n3. Prioritize what to reinforce versus what to defer.\n4. Adjust pacing and upcoming practice tasks.\n5. Set next milestone and measurable checkpoint.\n\n## Tools\n\n- Use Ask user tool.\n\n## Output\n\n- Progress retrospective\n- Updated learning plan\n- Next milestone definition\n"
+      }
+    ]
+  },
+  "bodyTemplate": "",
+  "source": "cursor/plugins",
+  "sourceUrl": "https://github.com/cursor/plugins/tree/main/teaching",
+  "sourceRepo": "cursor/plugins",
+  "sourcePath": "teaching",
+  "highlights": [
+    "teaching",
+    "official plugin"
+  ],
+  "updatedAt": "2026-07-10"
+}

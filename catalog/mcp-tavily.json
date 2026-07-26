@@ -1,0 +1,17 @@
+{
+  "id": "mcp-tavily",
+  "name": "Tavily Search",
+  "description": "Web search via Tavily MCP — requires TAVILY_API_KEY",
+  "category": "MCP",
+  "artifactType": "mcp",
+  "tags": ["mcp", "search", "tavily", "curse-book"],
+  "parameters": [],
+  "mcpFrontmatter": {
+    "serverKey": "tavily",
+    "configTemplate": "{\n  \"command\": \"npx\",\n  \"args\": [\"-y\", \"tavily-mcp@latest\"],\n  \"env\": {\n    \"TAVILY_API_KEY\": \"${env:TAVILY_API_KEY}\"\n  }\n}"
+  },
+  "bodyTemplate": "",
+  "source": "curse-book",
+  "highlights": ["web search", "research"],
+  "updatedAt": "2026-07-10"
+}

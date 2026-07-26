@@ -30,9 +30,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Tailwind CSS\n\n- Use utility classes directly in JSX/template\n- Avoid `@apply` except in rare design-token cases\n{{#if parameters.mobileFirst}}\n- Design mobile-first; use `sm:`, `md:`, `lg:` breakpoints progressively\n{{/if}}\n{{#if parameters.useCva}}\n- Use `class-variance-authority` for component variants\n{{/if}}\n- Extract repeated class strings into component props, not CSS files\n- Use Tailwind's design tokens (spacing, colors) consistently\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/tailwind-css.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "tailwind-css.json",
   "highlights": [
     "Tailwind",

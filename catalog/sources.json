@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "minStarsPolicy": 1000,
+  "sources": [
+    {
+      "id": "awesome-cursorrules",
+      "repo": "PatrickJS/awesome-cursorrules",
+      "starsAtReview": 40287,
+      "license": "CC0-1.0",
+      "artifactTypes": ["rule"],
+      "importScript": "import-awesome-cursorrules.mjs",
+      "bulkCap": 50,
+      "excludeIds": [
+        "accessibility",
+        "api-design",
+        "code-review",
+        "csharp-dotnet",
+        "django-rest",
+        "docker-kubernetes",
+        "documentation",
+        "flutter-mobile",
+        "git-commit-helper",
+        "go-standards",
+        "graphql-api",
+        "hook-block-dangerous-shell",
+        "hook-format-on-edit",
+        "java-spring-boot",
+        "kotlin-android",
+        "mcp-github",
+        "mcp-postgres",
+        "mcp-tavily",
+        "monorepo",
+        "nextjs-app-router",
+        "node-express-api",
+        "plugin-devops-hooks",
+        "plugin-team-review-kit",
+        "pr-workflow",
+        "python-fastapi",
+        "react-typescript",
+        "rust-standards",
+        "security-review",
+        "subagent-code-reviewer",
+        "subagent-debugger",
+        "subagent-docs-writer",
+        "tailwind-css",
+        "testing-standards",
+        "typescript-standards",
+        "vue-typescript"
+      ],
+      "pruneImportedIds": [
+        "acr-flutter-development-guidelines",
+        "acr-flutter-app-expert",
+        "acr-flutter-riverpod",
+        "acr-android-jetpack-compose",
+        "acr-cursorrules-cursor-ai-nextjs-14-tailwind-seo-set",
+        "acr-es-module-nodejs-guidelines",
+        "acr-fastapi-production-architecture"
+      ],
+      "shipped": true
+    },
+    {
+      "id": "cursor/plugins",
+      "repo": "cursor/plugins",
+      "starsAtReview": 2260,
+      "license": "per-plugin",
+      "artifactTypes": ["plugin"],
+      "importScript": "import-cursor-plugins.mjs",
+      "bulkCap": 10,
+      "allowlist": [
+        "cursor-team-kit",
+        "teaching",
+        "continual-learning"
+      ],
+      "notes": "github, tavily, and postgres are not in the current marketplace; native MCP templates (mcp-github, mcp-tavily, mcp-postgres) cover those integrations.",
+      "shipped": true
+    },
+    {
+      "id": "vercel-labs/skills",
+      "repo": "vercel-labs/skills",
+      "starsAtReview": 25710,
+      "license": null,
+      "artifactTypes": [],
+      "importScript": null,
+      "shipped": false,
+      "referenceOnly": true,
+      "referenceUrl": "https://skills.sh",
+      "notes": "Ecosystem CLI (npx skills). Install skills via skills.sh — not bulk-imported into Curse Book."
+    }
+  ]
+}

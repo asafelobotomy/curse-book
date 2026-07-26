@@ -1,0 +1,30 @@
+{
+  "id": "hook-block-dangerous-shell",
+  "name": "Block Dangerous Shell",
+  "description": "Block risky shell commands before execution",
+  "category": "Hooks",
+  "artifactType": "hook",
+  "tags": ["hooks", "security", "curse-book"],
+  "parameters": [
+    {
+      "key": "blockPatterns",
+      "label": "Blocked patterns (regex)",
+      "fieldType": "text",
+      "default": "rm\\s+-rf|curl\\s+.*\\|\\s*sh"
+    }
+  ],
+  "hookBundle": {
+    "hooksJson": "{\n  \"version\": 1,\n  \"hooks\": {\n    \"beforeShellExecution\": [\n      {\n        \"command\": \".cursor/hooks/block-dangerous.sh\",\n        \"description\": \"Block dangerous shell commands\"\n      }\n    ]\n  }\n}",
+    "scripts": [
+      {
+        "path": "block-dangerous.sh",
+        "content": "#!/usr/bin/env bash\nset -euo pipefail\nCMD=\"${CURSOR_SHELL_COMMAND:-}\"\nPATTERN='{{parameters.blockPatterns}}'\nif echo \"$CMD\" | grep -Eq \"$PATTERN\"; then\n  echo \"Blocked dangerous command: $CMD\" >&2\n  exit 1\nfi\nexit 0\n",
+        "executable": true
+      }
+    ]
+  },
+  "bodyTemplate": "",
+  "source": "curse-book",
+  "highlights": ["beforeShellExecution", "security"],
+  "updatedAt": "2026-07-10"
+}

@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { Copy, Rocket } from "lucide-react";
 import { api } from "../lib/api";
+import { copyUserRuleText } from "../lib/cursorExport";
 import type { CompileResult, Preset, TemplateDefinition } from "../lib/types";
 import { ParameterForm } from "../components/ParameterForm";
 import { MarkdownPreview } from "../components/MarkdownPreview";
+import { DeploySheet } from "../components/library/DeploySheet";
 import { Button, Card } from "../components/ui";
 
 export function PresetEditorPage() {
@@ -15,13 +18,14 @@ export function PresetEditorPage() {
   const [preview, setPreview] = useState<CompileResult | null>(null);
   const [showRaw, setShowRaw] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showDeploy, setShowDeploy] = useState(false);
 
   const load = useCallback(async () => {
     if (!id) return;
     const p = await api.getPreset(id);
     if (!p) {
-      toast.error("Preset not found");
-      navigate("/presets");
+      toast.error("Library item not found");
+      navigate("/library");
       return;
     }
     setPreset(p);
@@ -59,11 +63,21 @@ export function PresetEditorPage() {
     try {
       const saved = await api.savePreset(preset);
       setPreset(saved);
-      toast.success("Preset saved");
+      toast.success("Saved to library");
     } catch (e) {
       toast.error(String(e));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const copyForUserRules = async () => {
+    if (!preset) return;
+    try {
+      const text = await api.exportUserRuleText(preset.id);
+      await copyUserRuleText(text);
+    } catch (e) {
+      toast.error(String(e));
     }
   };
 
@@ -72,17 +86,32 @@ export function PresetEditorPage() {
   }
 
   const previewContent = preview?.artifacts[0]?.content ?? "";
+  const isRule = preset.artifactType !== "skill";
 
   return (
     <div className="p-6 flex flex-col h-full">
-      <header className="flex items-center justify-between mb-6">
+      <header className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h2 className="text-2xl font-bold">{preset.name}</h2>
           <p className="text-[var(--color-text-muted)] mt-1">{preset.description}</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => navigate("/presets")}>
-            Back
+        <div className="flex gap-2 flex-wrap">
+          <Button variant="secondary" onClick={() => navigate("/library")}>
+            Back to library
+          </Button>
+          {isRule && (
+            <Button
+              variant="secondary"
+              onClick={copyForUserRules}
+              title="Copy plain text for Cursor Settings → User Rules (paste manually)"
+            >
+              <Copy size={14} />
+              Copy for User Rules
+            </Button>
+          )}
+          <Button variant="secondary" onClick={() => setShowDeploy(true)}>
+            <Rocket size={14} />
+            Deploy
           </Button>
           <Button onClick={save} disabled={saving}>
             {saving ? "Saving..." : "Save"}
@@ -94,7 +123,7 @@ export function PresetEditorPage() {
         <Card className="overflow-auto">
           <h3 className="font-semibold mb-4">Parameters</h3>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1.5">Preset name</label>
+            <label className="block text-sm font-medium mb-1.5">Name</label>
             <input
               type="text"
               value={preset.name}
@@ -119,6 +148,7 @@ export function PresetEditorPage() {
                 </span>
               )}
               <button
+                type="button"
                 onClick={() => setShowRaw(!showRaw)}
                 className="text-xs text-[var(--color-accent)] hover:underline"
               >
@@ -129,6 +159,10 @@ export function PresetEditorPage() {
           <MarkdownPreview content={previewContent} raw={showRaw} />
         </Card>
       </div>
+
+      {showDeploy && (
+        <DeploySheet preset={preset} onClose={() => setShowDeploy(false)} />
+      )}
     </div>
   );
 }

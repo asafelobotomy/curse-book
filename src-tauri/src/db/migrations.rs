@@ -65,9 +65,45 @@ pub fn run(conn: &Connection) -> rusqlite::Result<()> {
         let _ = conn.execute("ALTER TABLE templates ADD COLUMN source_url TEXT", []);
         let _ = conn.execute("ALTER TABLE templates ADD COLUMN source_repo TEXT", []);
         let _ = conn.execute("ALTER TABLE templates ADD COLUMN source_path TEXT", []);
-        let _ = conn.execute("ALTER TABLE templates ADD COLUMN highlights TEXT NOT NULL DEFAULT '[]'", []);
+        let _ = conn.execute(
+            "ALTER TABLE templates ADD COLUMN highlights TEXT NOT NULL DEFAULT '[]'",
+            [],
+        );
         let _ = conn.execute("ALTER TABLE templates ADD COLUMN updated_at TEXT", []);
         conn.execute("PRAGMA user_version = 2", [])?;
+    }
+
+    let version: i32 = conn.query_row("PRAGMA user_version", [], |row| row.get(0))?;
+
+    if version < 3 {
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN subagent_frontmatter TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN hook_bundle TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN mcp_frontmatter TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN plugin_manifest TEXT", []);
+        let _ = conn.execute("ALTER TABLE templates ADD COLUMN plugin_bundle TEXT", []);
+
+        conn.execute_batch(
+            "
+            CREATE TABLE IF NOT EXISTS installed_plugins (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL UNIQUE,
+                version TEXT,
+                path TEXT NOT NULL,
+                checksum TEXT,
+                installed_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS plugin_sources (
+                id TEXT PRIMARY KEY,
+                repo TEXT NOT NULL,
+                commit_sha TEXT,
+                imported_at TEXT NOT NULL,
+                plugin_count INTEGER NOT NULL DEFAULT 0
+            );
+            ",
+        )?;
+
+        conn.execute("PRAGMA user_version = 3", [])?;
     }
 
     Ok(())

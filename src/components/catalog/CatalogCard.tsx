@@ -1,69 +1,88 @@
-import { artifactBadge } from "../../lib/utils";
+import { artifactBadge, artifactBadgeClass } from "../../lib/utils";
 import type { TemplateDefinition } from "../../lib/types";
-import { getGlobPattern } from "../../lib/catalog";
+import { getGlobPattern, getPluginComponentSummary } from "../../lib/catalog";
+import { useRegistrySourceIds } from "../../lib/CatalogRegistrySourceContext";
+import { displayTemplateTags } from "../../lib/tags";
 import { TagChip } from "./TagChip";
 import { Badge, Button, Card } from "../ui";
+
+const VISIBLE_TAGS = 4;
 
 interface CatalogCardProps {
   template: TemplateDefinition;
   activeTags: Set<string>;
+  selected?: boolean;
   tokenEstimate?: number;
   onSelect: (template: TemplateDefinition) => void;
   onTagClick: (tag: string) => void;
   onAddToLibrary: (template: TemplateDefinition) => void;
 }
 
-function artifactBadgeClass(type: string): string {
-  switch (type) {
-    case "rule":
-      return "bg-[var(--color-accent)]/20 text-[var(--color-accent-hover)]";
-    case "skill":
-      return "bg-teal-500/20 text-teal-300";
-    default:
-      return "";
-  }
-}
-
 export function CatalogCard({
   template,
   activeTags,
+  selected = false,
   tokenEstimate,
   onSelect,
   onTagClick,
   onAddToLibrary,
 }: CatalogCardProps) {
+  const registrySourceIds = useRegistrySourceIds();
   const globs = getGlobPattern(template);
+  const pluginSummary = getPluginComponentSummary(template);
+  const displayTags = displayTemplateTags(template.tags, registrySourceIds);
+  const visibleTags = displayTags.slice(0, VISIBLE_TAGS);
+  const overflowCount = displayTags.length - VISIBLE_TAGS;
 
   return (
     <Card
-      className="catalog-card flex flex-col cursor-pointer hover:border-[var(--color-accent)]/50 transition-colors"
-      onClick={() => onSelect(template)}
+      className={`catalog-card flex flex-col min-h-[220px] p-5 gap-3 transition-colors ${
+        selected
+          ? "border-[var(--color-accent)] ring-1 ring-[var(--color-accent)]/40"
+          : "hover:border-[var(--color-accent)]/50"
+      }`}
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-semibold leading-snug">{template.name}</h3>
+      <div className="flex items-center justify-between gap-2">
         <Badge className={artifactBadgeClass(template.artifactType)}>
           {artifactBadge(template.artifactType)}
         </Badge>
+        <span className="text-xs text-[var(--color-text-muted)]">
+          {template.category}
+        </span>
       </div>
 
-      <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 mb-3">
+      <h3 className="font-semibold text-base leading-snug">{template.name}</h3>
+
+      <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 flex-1">
         {template.description}
       </p>
 
-      <div className="text-xs text-[var(--color-text-muted)] mb-3 flex flex-wrap gap-x-2 gap-y-1">
-        <span className="px-1.5 py-0.5 rounded bg-[var(--color-surface-overlay)]">
-          {template.category}
-        </span>
+      <div className="flex flex-wrap items-center gap-2 text-xs">
         {globs && (
-          <span className="truncate max-w-[140px]" title={globs}>
+          <span
+            className="font-mono px-2 py-0.5 rounded bg-[var(--color-surface-overlay)] text-[var(--color-text-muted)] break-all"
+            title={globs}
+          >
             {globs}
           </span>
         )}
-        <span>{template.parameters.length} params</span>
+        <span className="px-2 py-0.5 rounded bg-[var(--color-surface-overlay)] text-[var(--color-text-muted)]">
+          {template.parameters.length} params
+        </span>
+        {pluginSummary && (
+          <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-300">
+            {pluginSummary}
+          </span>
+        )}
+        {tokenEstimate !== undefined && (
+          <span className="px-2 py-0.5 rounded bg-[var(--color-accent)]/15 text-[var(--color-accent-hover)]">
+            ~{tokenEstimate} tokens
+          </span>
+        )}
       </div>
 
-      <div className="flex flex-wrap gap-1 mb-3" onClick={(e) => e.stopPropagation()}>
-        {template.tags.map((tag) => (
+      <div className="flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
+        {visibleTags.map((tag) => (
           <TagChip
             key={tag}
             tag={tag}
@@ -72,24 +91,30 @@ export function CatalogCard({
             onClick={onTagClick}
           />
         ))}
+        {overflowCount > 0 && (
+          <span
+            className="text-xs px-2 py-0.5 rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)]"
+            title={displayTags.slice(VISIBLE_TAGS).join(", ")}
+          >
+            +{overflowCount}
+          </span>
+        )}
       </div>
 
-      <div className="flex items-center justify-between mt-auto pt-2 border-t border-[var(--color-border)]">
-        <span className="text-xs text-[var(--color-text-muted)]">
-          {tokenEstimate !== undefined ? `~${tokenEstimate} tokens` : "\u00a0"}
-        </span>
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onSelect(template)}
-          >
-            Details
-          </Button>
-          <Button size="sm" onClick={() => onAddToLibrary(template)}>
-            Add +
-          </Button>
-        </div>
+      <div
+        className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--color-border)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Button size="sm" variant="ghost" onClick={() => onSelect(template)}>
+          Details
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => onAddToLibrary(template)}
+          title="Quick add with default parameters — use Details to customize first"
+        >
+          Add +
+        </Button>
       </div>
     </Card>
   );

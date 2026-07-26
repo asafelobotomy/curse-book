@@ -26,7 +26,7 @@ export function PacksPage() {
 
   const exportPack = async () => {
     if (selected.size === 0) {
-      toast.error("Select at least one preset");
+      toast.error("Select at least one library item");
       return;
     }
     const path = await save({
@@ -91,7 +91,7 @@ export function PacksPage() {
   return (
     <div className="p-6 max-w-3xl">
       <header className="mb-6">
-        <h2 className="text-2xl font-bold">Preset Packs</h2>
+        <h2 className="text-2xl font-bold">Library Packs</h2>
         <p className="text-[var(--color-text-muted)] mt-1">
           Export, import, and share .curse-pack bundles
         </p>

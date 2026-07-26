@@ -3,7 +3,7 @@ import type { OnMount } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import {
   buildHighlightDecorations,
-  buildTermDecorations,
+  buildLineDecorations,
   mergeDecorations,
 } from "../../lib/highlight";
 
@@ -11,8 +11,8 @@ const Editor = lazy(() => import("@monaco-editor/react"));
 
 interface MonacoPreviewProps {
   content: string;
-  searchTerms?: string[];
-  highlights?: string[];
+  paramHighlightLines?: number[];
+  userFilterTerms?: string[];
   highlightHandlebars?: boolean;
   wordWrap?: boolean;
   language?: string;
@@ -21,14 +21,14 @@ interface MonacoPreviewProps {
 function applyDecorations(
   instance: editor.IStandaloneCodeEditor,
   content: string,
-  searchTerms: string[],
-  highlights: string[],
+  paramHighlightLines: number[],
+  userFilterTerms: string[],
   highlightHandlebars: boolean,
   collectionRef: React.MutableRefObject<editor.IEditorDecorationsCollection | null>,
 ) {
   const decorations = mergeDecorations(
-    buildTermDecorations(content, highlights),
-    buildHighlightDecorations(content, searchTerms, { highlightHandlebars }),
+    buildLineDecorations(paramHighlightLines),
+    buildHighlightDecorations(content, userFilterTerms, { highlightHandlebars }),
   );
   collectionRef.current?.clear();
   collectionRef.current = instance.createDecorationsCollection(decorations);
@@ -36,8 +36,8 @@ function applyDecorations(
 
 export function MonacoPreview({
   content,
-  searchTerms = [],
-  highlights = [],
+  paramHighlightLines = [],
+  userFilterTerms = [],
   highlightHandlebars = false,
   wordWrap = true,
   language = "markdown",
@@ -51,20 +51,20 @@ export function MonacoPreview({
     applyDecorations(
       instance,
       content,
-      searchTerms,
-      highlights,
+      paramHighlightLines,
+      userFilterTerms,
       highlightHandlebars,
       decorationsRef,
     );
-  }, [content, searchTerms, highlights, highlightHandlebars]);
+  }, [content, paramHighlightLines, userFilterTerms, highlightHandlebars]);
 
   const handleMount: OnMount = (instance) => {
     editorRef.current = instance;
     applyDecorations(
       instance,
       content,
-      searchTerms,
-      highlights,
+      paramHighlightLines,
+      userFilterTerms,
       highlightHandlebars,
       decorationsRef,
     );

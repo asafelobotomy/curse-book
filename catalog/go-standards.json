@@ -29,9 +29,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Go Standards\n\n- Follow standard Go project layout\n- Handle all errors explicitly; never ignore returned errors\n{{#if parameters.useContext}}\n- Pass `context.Context` as first parameter to I/O functions\n{{/if}}\n- Use `gofmt` and `golangci-lint` before committing\n{{#if parameters.tableDrivenTests}}\n- Write table-driven tests with `t.Run` subtests\n{{/if}}\n- Prefer composition over inheritance\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/go-standards.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "go-standards.json",
   "highlights": [
     "Go",

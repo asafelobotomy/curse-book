@@ -59,7 +59,7 @@ export function LocalAiPage() {
       const preset = await api.createPresetFromTemplate(template.id, undefined);
       const updated = { ...preset, parameters: { ...preset.parameters, ...params } };
       await api.savePreset(updated);
-      toast.success(`Created preset "${updated.name}" with AI-tuned parameters`);
+      toast.success(`Added "${updated.name}" to your library`);
       setResult(JSON.stringify(params, null, 2));
     } catch (e) {
       toast.error(String(e));
@@ -76,7 +76,7 @@ export function LocalAiPage() {
           Local AI Assistant
         </h2>
         <p className="text-[var(--color-text-muted)] mt-1">
-          Use Ollama for offline preset generation and tuning
+          Use Ollama for offline library item generation and tuning
         </p>
       </header>
 
@@ -158,7 +158,7 @@ export function LocalAiPage() {
         </div>
         <div className="flex gap-2">
           <Button onClick={wizardToPreset} disabled={loading || !status?.available}>
-            Create preset from description
+            Add to library from description
           </Button>
           <Button
             variant="secondary"

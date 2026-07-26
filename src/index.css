@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-surface: #0f1117;
-  --color-surface-raised: #1a1d27;
-  --color-surface-overlay: #242836;
-  --color-border: #2e3345;
-  --color-text: #e8eaed;
-  --color-text-muted: #9aa0b0;
-  --color-accent: #7c6af7;
-  --color-accent-hover: #9585ff;
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-danger: #f87171;
+  --color-surface: #282828;
+  --color-surface-raised: #32302f;
+  --color-surface-overlay: #3c3836;
+  --color-border: #504945;
+  --color-text: #ebdbb2;
+  --color-text-muted: #a89984;
+  --color-accent: #fe8019;
+  --color-accent-hover: #fabd2f;
+  --color-success: #b8bb26;
+  --color-warning: #fabd2f;
+  --color-danger: #fb4934;
 }
 
 * {
@@ -49,15 +49,15 @@ body {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
-.catalog-drawer {
-  animation: drawer-slide-in 0.2s ease-out;
+.catalog-detail-window {
+  animation: detail-window-in 0.2s ease-out;
 }
 
-.catalog-drawer-backdrop {
+.catalog-detail-backdrop {
   animation: fade-in 0.15s ease-out;
 }
 
-@keyframes drawer-slide-in {
+@keyframes detail-window-in {
   from {
     transform: translateX(100%);
   }
@@ -80,8 +80,9 @@ body {
   background-color: rgba(251, 191, 36, 0.35) !important;
 }
 
-.monaco-highlight-term-inline {
-  background-color: rgba(124, 106, 247, 0.35) !important;
+.monaco-highlight-param-inline,
+.monaco-highlight-param {
+  background-color: color-mix(in srgb, var(--color-accent) 25%, transparent) !important;
 }
 
 .monaco-highlight-handlebars-inline {

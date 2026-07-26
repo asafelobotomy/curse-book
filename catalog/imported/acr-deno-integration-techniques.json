@@ -1,0 +1,30 @@
+{
+  "id": "acr-deno-integration-techniques",
+  "name": "Deno Integration Techniques",
+  "description": "Cursor rules for Deno development with integration techniques.",
+  "category": "General",
+  "artifactType": "rule",
+  "tags": [
+    "imported",
+    "awesome-cursorrules",
+    "deno integration techniques"
+  ],
+  "parameters": [],
+  "ruleFrontmatter": {
+    "description": "Cursor rules for Deno development with integration techniques.",
+    "globs": "**/*",
+    "alwaysApply": false
+  },
+  "skillFrontmatter": null,
+  "bodyTemplate": "This project contains automation scripts and workflows for the @findhow packages, based on the original Deno automation repository. The goal is to provide consistent and efficient automation for the @findhow ecosystem.\n\nThe purpose of this project is to refactor and adapt the automation scripts from [denoland/automation](https://github.com/denoland/automation) for use with the configured @findhow package repositories.\n\nWhen working on this project, Cursor AI should:\n\nWhen making changes:\n\nWhen updating documentation:\n\nWhen creating or modifying automation scripts:\n\nRemember to thoroughly test all modifications to ensure they work correctly with the @findhow ecosystem before merging changes into the main branch.",
+  "source": "awesome-cursorrules",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/deno-integration-techniques-cursorrules-prompt-fil.mdc",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/deno-integration-techniques-cursorrules-prompt-fil.mdc",
+  "highlights": [
+    "Deno",
+    "Cursor",
+    "Remember"
+  ],
+  "updatedAt": "2026-05-13"
+}

@@ -6,7 +6,7 @@ Curse Book treats rules/skills as **parameterized presets** that compile to Curs
 
 ## Features
 
-- **Template Catalog** — 18+ curated presets inspired by [awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules)
+- **Template Catalog** — 85+ curated templates (native parameterized presets, imported rules, and official plugins)
 - **Preset Editor** — Sliders, toggles, dropdowns with live markdown preview
 - **Project Deploy** — Scan projects, preview diffs, deploy to `.cursor/`
 - **Benchmark Lab** — Token footprint charts and benchmark history

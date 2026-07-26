@@ -1,0 +1,30 @@
+{
+  "id": "hook-format-on-edit",
+  "name": "Format on Edit",
+  "description": "Run a formatter script after file edits",
+  "category": "Hooks",
+  "artifactType": "hook",
+  "tags": ["hooks", "formatting", "curse-book"],
+  "parameters": [
+    {
+      "key": "formatter",
+      "label": "Formatter command",
+      "fieldType": "text",
+      "default": "prettier --write"
+    }
+  ],
+  "hookBundle": {
+    "hooksJson": "{\n  \"version\": 1,\n  \"hooks\": {\n    \"afterFileEdit\": [\n      {\n        \"command\": \".cursor/hooks/format.sh\",\n        \"description\": \"Format file after edit\"\n      }\n    ]\n  }\n}",
+    "scripts": [
+      {
+        "path": "format.sh",
+        "content": "#!/usr/bin/env bash\nset -euo pipefail\nFILE=\"${CURSOR_FILE_PATH:-}\"\nif [ -z \"$FILE\" ]; then exit 0; fi\n{{parameters.formatter}} \"$FILE\"\n",
+        "executable": true
+      }
+    ]
+  },
+  "bodyTemplate": "",
+  "source": "curse-book",
+  "highlights": ["afterFileEdit", "formatting"],
+  "updatedAt": "2026-07-10"
+}

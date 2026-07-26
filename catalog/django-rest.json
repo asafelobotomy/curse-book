@@ -30,9 +30,9 @@
     "alwaysApply": false
   },
   "bodyTemplate": "# Django REST Framework\n\n{{#if parameters.useSerializers}}\n- Validate all input through DRF serializers\n- Never trust raw request.data without validation\n{{/if}}\n{{#if parameters.useViewSets}}\n- Use ViewSets with routers for CRUD endpoints\n{{/if}}\n- Keep views thin; business logic in services or models\n- Use pagination for list endpoints\n- Return consistent error response format\n",
-  "source": "awesome-cursorrules",
-  "sourceUrl": "https://github.com/asafelobotomy/curse-book/blob/main/catalog/django-rest.json",
-  "sourceRepo": "asafelobotomy/curse-book",
+  "source": "curse-book",
+  "sourceUrl": "https://github.com/PatrickJS/awesome-cursorrules",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
   "sourcePath": "django-rest.json",
   "highlights": [
     "Django",

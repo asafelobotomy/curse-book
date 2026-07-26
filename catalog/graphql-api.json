@@ -1,0 +1,39 @@
+{
+  "id": "graphql-api",
+  "name": "GraphQL API Standards",
+  "description": "GraphQL schema design, resolvers, and client conventions",
+  "category": "Backend",
+  "artifactType": "rule",
+  "tags": ["graphql", "api", "backend", "curse-book"],
+  "parameters": [
+    {
+      "key": "codeFirst",
+      "label": "Code-first schema (vs SDL)",
+      "fieldType": "toggle",
+      "default": false
+    },
+    {
+      "key": "relayStyle",
+      "label": "Relay-style connections",
+      "fieldType": "toggle",
+      "default": true
+    },
+    {
+      "key": "requireDataLoader",
+      "label": "Require DataLoader for N+1",
+      "fieldType": "toggle",
+      "default": true
+    }
+  ],
+  "ruleFrontmatter": {
+    "description": "GraphQL API design and resolver conventions",
+    "globs": "**/*.{graphql,gql,ts,tsx}",
+    "alwaysApply": false
+  },
+  "bodyTemplate": "# GraphQL API Standards\n\n- Name types and fields in PascalCase / camelCase consistently\n- Document public fields with descriptions in the schema\n{{#if parameters.codeFirst}}\n- Define schema in code with strong TypeScript types; export schema for codegen\n{{else}}\n- Keep SDL as source of truth; generate types via codegen\n{{/if}}\n{{#if parameters.relayStyle}}\n- Use connection patterns (`edges`, `node`, `pageInfo`) for paginated lists\n{{/if}}\n- Validate inputs at resolver boundary; return typed errors, not generic strings\n{{#if parameters.requireDataLoader}}\n- Batch related entity loads with DataLoader; never query per row in a list field\n{{/if}}\n- Avoid over-fetching: scope selections and use field-level authorization\n",
+  "source": "curse-book",
+  "sourceRepo": "PatrickJS/awesome-cursorrules",
+  "sourcePath": "rules/graphql-*.mdc",
+  "highlights": ["GraphQL", "schema", "DataLoader", "pagination"],
+  "updatedAt": "2026-07-10"
+}
