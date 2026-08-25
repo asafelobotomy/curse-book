@@ -1,5 +1,7 @@
 # Curse Book
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U5R225QZH3)
+
 A desktop GUI for creating, customizing, and deploying Cursor rules, skills, and behaviors.
 
 Curse Book treats rules/skills as **parameterized presets** that compile to Cursor-native artifacts (`.mdc`, `SKILL.md`, manifests) — no manual markdown editing required.
